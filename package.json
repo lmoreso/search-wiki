@@ -1,0 +1,26 @@
+{
+  "name": "react-ts-prova",
+  "version": "0.1.1",
+  "private": true,
+  "dependencies": {
+    "@uifabric/react-hooks": "^7.13.9",
+    "office-ui-fabric-react": "^6.189.2",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
+    "react-scripts-ts": "3.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build",
+    "test": "react-scripts-ts test --env=jsdom",
+    "eject": "react-scripts-ts eject",
+    "runBuild": "serve -s ./build"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.0",
+    "@types/node": "^10.12.23",
+    "@types/react": "^16.8.19",
+    "@types/react-dom": "^16.8.0",
+    "typescript": "^3.3.3"
+  }
+}
