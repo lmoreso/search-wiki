@@ -1,23 +1,23 @@
-<p align="center">
+<!-- <p align="center">
   <a href="" rel="noopener">
  <img width=200px height=200px src="https://i.imgur.com/6wj0hh6.jpg" alt="Project logo"></a>
-</p>
+</p> -->
 
-<h3 align="center">react-ts-prova</h3>
+<h1 align="center">search-wiki-example</h1>
 
 <div align="center">
 
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/pulls)
+[![Status](https://img.shields.io/badge/status-active-success.svg)](https://github.com/lmoreso/search-wiki)
+[![GitHub Issues](https://img.shields.io/github/issues/lmoreso/search-wiki.svg)](https://github.com/lmoreso/search-wiki/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/lmoreso/search-wiki.svg)](https://github.com/lmoreso/search-wiki/pulls)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
 </div>
 
 ---
 
-<p align="center"> Few lines describing your project.
-    <br> 
+<p align="left"> 
+SearchWiki es un componente React realizado con FluentUI, y, por tanto, escrito en Typescript, que es capaz de lanzar una consulta a cualquier Wiki (como Wikipedia), extraer un extracto del artículo(s) encontrado(s) (primeras frases y foto principal) y mostrarlos en el navegador. 
 </p>
 
 ## 📝 Table of Contents
@@ -25,91 +25,80 @@
 
 - [About](#about)
 - [Getting Started](#getting_started)
-- [Deployment](#deployment)
 - [Usage](#usage)
 - [Built Using](#built_using)
-- [TODO](../TODO.md)
-- [Contributing](../CONTRIBUTING.md)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
 
 ## 🧐 About <a name = "about"></a>
 
-Write about 1-2 paragraphs describing the purpose of your project.
+SearchWiki es un componente React realizado con FluentUI, y, por tanto, escrito en Typescript, que es capaz de lanzar una consulta a cualquier Wiki (como Wikipedia), extraer un extracto (primeros párrafos y foto principal) del artículo(s) encontrado(s) y mostrarlos en el navegador. 
+- Puede utilizarse en Tooltips, en los Paneles Modales y laterales de FluentUI, y donde se te ocurra.
+- Esta aplicación muestra ejemplos de uso y configuración del componente.
+- [Pincha aquí para probar la aplicación.](https://lmoreso.neocities.org/search-wiki-example/index.html)
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-What things you need to install the software and how to install them.
-
+Esta aplicación ha sido creada con create-react-app, con lo cual es muy facil de utilizar:
+- Clona la aplicación en una carpeta de tu PC (por ejemplo, 'search-wiki-example').
+- Ves a la carpeta principal e instala las dependencias:
 ```
-Give examples
+search-wiki-example$ npm install
 ```
-
-### Installing
-
-A step by step series of examples that tell you how to get a development env running.
-
-Say what the step will be
-
+- Lanza el server:
 ```
-Give the example
+search-wiki-example$ npm run start
 ```
-
-And repeat
-
+- Si no se abre un navegador de forma automática, ábrelo y ves a la dirección indicada por el servidor.
 ```
-until finished
-```
+Compiled successfully!
 
-End with an example of getting some data out of the system or using it for a little demo.
+You can now view search-wiki in the browser.
 
-## 🔧 Running the tests <a name = "tests"></a>
+  Local:            http://localhost:3000/
+  On Your Network:  http://192.168.1.106:3000/
+  ```
 
-Explain how to run the automated tests for this system.
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
 
 ## 🎈 Usage <a name="usage"></a>
+La aplicación consta de 2 paneles:
+1. El panel izquierdo, para configurar el componente, se divide en dos pestañas:
+  -  Búsqueda, para configurar los parámetros de la llamada a la API de MediaWiki.
+  -  Formato, para configurar la presentación de los resultados.
+2. El panel derecho, donde se muestran los resultados.
+<br>
+<br>
+ <img width=250px src="./search-wiki-busqueda.png">
+ <img width=250px src="./search-wiki-formato.png">
+ <img width=250px src="./search-wiki-resultado.png">
 
-Add notes about how to use the system.
+### 🎈 Configuración de la Búsqueda <a name="usage-search"></a>
+Cuando cambies cualquier parámetro, se activará el botón 'Busca en Wikipedia', el cual lanza la query y pinta los resultados en el panel derecho, según el formato establecido en la pestaña 'Formato'.
 
-## 🚀 Deployment <a name = "deployment"></a>
+### 🎈 Configuración del Formato de presentación <a name="usage-formato"></a>
+El cambio de cualquier parámetro se refleja directamente en el resultado.
 
-Add additional notes about how to deploy this on a live system.
+### 🎈 Resultado <a name="usage-resultado"></a>
+El resultado consta de 4 elementos:
+- Título: es el título de la página encontrada, no el texto de búsqueda. Si has pedido mas de una página aparecen unas flechas para navegar entre cada una de ellas.
+- Fotografía: es la foto devuelta por la API.
+- Extracto: es el texto devuelto por la API.
+- Enlace a la página de Wikipedia. Sólo se pinta si se ha suministrado un texto para el enlace.
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
-- [MongoDB](https://www.mongodb.com/) - Database
-- [Express](https://expressjs.com/) - Server Framework
-- [VueJs](https://vuejs.org/) - Web Framework
 - [NodeJs](https://nodejs.org/en/) - Server Environment
+- [ReactJs](https://reactjs.org/) - Web Framework
+- [FluentUI](https://developer.microsoft.com/en-us/fluentui#/controls/web/) - UI Framework
+- [Typescript](https://www.typescriptlang.org/docs/)
 
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@kylelobo](https://github.com/kylelobo) - Idea & Initial work
+- [@lmoreso](https://github.com/lmoreso) - Idea & Initial work
 
-See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors) who participated in this project.
+<!-- See also the list of [contributors](https://github.com/lmoreso/search-wiki/contributors) who participated in this project. -->
 
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
-- Hat tip to anyone whose code was used
-- Inspiration
-- References
+- [Mediawiki](https://www.mediawiki.org/wiki/MediaWiki) - Por dotar de servicios REST a las Wikis.
+- [Wikipedia](https://wikimediafoundation.org/) - Y a todos sus colaboradores, por el enorme servicio aportado a la sociedad.
