@@ -68,9 +68,7 @@ La aplicación consta de 2 paneles:
 2. El panel derecho, donde se muestran los resultados.
 <br>
 <br>
- <img width=250px src="./search-wiki-busqueda.png">
- <img width=250px src="./search-wiki-formato.png">
- <img width=250px src="./search-wiki-resultado.png">
+<img height=250px src="./search-wiki-example-capture.png">
 
 ### 🎈 Configuración de la Búsqueda <a name="usage-search"></a>
 Cuando cambies cualquier parámetro, se activará el botón 'Busca en Wikipedia', el cual lanza la query y pinta los resultados en el panel derecho, según el formato establecido en la pestaña 'Formato'.
@@ -100,5 +98,5 @@ El resultado consta de 4 elementos:
 
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
-- [Mediawiki](https://www.mediawiki.org/wiki/MediaWiki) - Por dotar de servicios REST a las Wikis.
-- [Wikipedia](https://wikimediafoundation.org/) - Y a todos sus colaboradores, por el enorme servicio aportado a la sociedad.
+- [Mediawiki](https://www.mediawiki.org/wiki/MediaWiki) - Por publicar los servicios REST.
+- [Wikipedia](https://wikimediafoundation.org/) - Por la gestión de los contenidos.

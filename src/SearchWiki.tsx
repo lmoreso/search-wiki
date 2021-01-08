@@ -11,10 +11,10 @@ import { Stack } from 'office-ui-fabric-react';
 export enum panelOrientations { landscape, portrait, auto }
 
 export interface ISearchWikiProps extends IExtractWikiProps {
-  enDesarrollo?: boolean;
+  fixedSize: number;
+  activarDepuracion?: boolean;
   panelOrientation?: panelOrientations;
   rootStyle?: React.CSSProperties;
-  fixedSize: number;
   textLinkWiki?: string;
 }
 
@@ -153,7 +153,7 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
       }
 
       // Estilos para Depuración
-      let divsBorder: string | undefined = (this.props.enDesarrollo) ? '1px solid red' : undefined;
+      let divsBorder: string | undefined = (this.props.activarDepuracion) ? '1px solid red' : undefined;
 
       // Estilos según orientación
       const divRootPadding: number = 2;
@@ -232,7 +232,7 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
             <div style={{ margin: (landscape) ? undefined : '10px', border: divsBorder }} />
           </Stack>
 
-          {(!this.props.enDesarrollo) ? null :
+          {(!this.props.activarDepuracion) ? null :
             <div style={{ alignItems: 'left', textAlign: 'left', marginLeft: '5px', maxWidth: '1024px' }}>
               <Label>URL</Label>
               <a href={this._wikiRes.queryUrl} target='_blank'>{this._wikiRes.queryUrl}</a>

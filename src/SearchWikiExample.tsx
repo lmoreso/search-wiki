@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Fabric, initializeIcons, Modal, SelectableOptionMenuItemType, Stack, } from 'office-ui-fabric-react';
+import { Fabric, initializeIcons, Link, Modal, SelectableOptionMenuItemType, Stack, } from 'office-ui-fabric-react';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
-import { Label } from 'office-ui-fabric-react/lib/Label';
+import { ILabelStyles, Label } from 'office-ui-fabric-react/lib/Label';
 import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize } from 'office-ui-fabric-react/lib/Pivot';
 import { Slider } from 'office-ui-fabric-react/lib/Slider';
 import { ComboBox, IComboBoxOption } from 'office-ui-fabric-react/lib/ComboBox';
@@ -115,22 +115,23 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
 
   public render(): JSX.Element {
     // let estilo = { margin: '10px', };
-    let controlStyles = { root: { margin: '0 10px 10px 10px', width: '300px', } };
-    let labelStyles = { root: { textAlign: 'left', fontSize: 'smaller', marginLeft: '10px', } };
+
+    let labelTitleStyles: Partial<ILabelStyles> = { root: { textAlign: 'left', fontSize: 'smaller', margin: '0 10px 0px 10px', fontWeight: 'bolder', } };
+    let controlStyles = { root: { margin: '0 10px 10px 10px', /* width: '300px',  */ } };
+    let labelStyle: React.CSSProperties = { textAlign: 'left', fontSize: 'smaller', };
+    // let labelControlStyles: Partial<ILabelStyles> = { root: { margin: '0 10px 10px 10px', textAlign: 'left', fontSize: 'smaller', } };
+    let labelControlStyle: React.CSSProperties = { textAlign: 'left', fontSize: 'smaller', margin: '0 10px 10px 10px', };
 
 
     return (
-      // <div style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', /* maxWidth: '1600px',  */ }}>
       <Fabric>
-
         <Stack horizontal verticalAlign='start' horizontalAlign='center'>
-          {/* <div style={{
-          display: 'flex', justifyContent: 'flex-start', flexDirection: 'column', margin: '10px',
-          borderStyle: 'solid', borderWidth: '1px', borderColor: 'gray',
-          boxShadow: '5px 5px 5px gray'
-        }}
-        > */}
-          <Stack styles={{ root: { margin: '10px', borderStyle: 'solid', borderWidth: '1px', borderColor: 'gray', boxShadow: '5px 5px 5px gray', } }}>
+          <Stack styles={{
+            root: {
+              margin: '10px', borderStyle: 'solid', borderWidth: '1px', borderColor: 'gray', boxShadow: '5px 5px 5px gray',
+              height: '580px', width: '330px', overflow: 'hidden',
+            }
+          }}>
             <Label style={{ fontSize: 'large', fontWeight: 'lighter', textAlign: 'center' }}>{'Configuración <SearchWiki />'}</Label>
             <Pivot
               linkSize={PivotLinkSize.large}
@@ -144,7 +145,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
             >
               <PivotItem headerText="Búsqueda" itemIcon="Globe">
                 <Stack>
-                  <Label styles={labelStyles}>{'Texto a buscar en la Wiki'}</Label>
+                  <Label styles={labelTitleStyles} >{'Texto a buscar en la Wiki'}</Label>
                   <ComboBox
                     selectedKey={this.state.selectComboSearchTextKey}
                     allowFreeform={true}
@@ -163,7 +164,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                       }
                     }}
                   />
-                  <Label styles={labelStyles}>{'URL de la Wiki'}</Label>
+                  <Label styles={labelTitleStyles}>{'URL de la Wiki'}</Label>
                   <Dropdown
                     // label={'URL de la Wiki'}
                     selectedKey={this.state.wikiUrl.key}
@@ -173,7 +174,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     options={comboIdiomes}
                     styles={controlStyles}
                   />
-                  <Label styles={labelStyles}>{'Texto Plano | HTML'}</Label>
+                  <Label styles={labelTitleStyles}>{'Texto Plano | HTML'}</Label>
                   <Toggle
                     // label={'Texto Plano | HTML'}
                     checked={this.state.plainText}
@@ -184,7 +185,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     offText={'Devuelve HTML'}
                     styles={controlStyles}
                   />
-                  <Label styles={labelStyles}>{'Nº de caracteres a recuperar (de 200 a 1200)'}</Label>
+                  <Label styles={labelTitleStyles}>{'Nº de caracteres a recuperar (de 200 a 1200)'}</Label>
                   <Slider
                     // label="Nº de caracteres a recuperar (de 200 a 1200)"
                     min={0}
@@ -197,7 +198,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     }}
                     styles={controlStyles}
                   />
-                  <Label styles={labelStyles}>{'Nº de Sentencias a recuperar (de 1 a 10)'}</Label>
+                  <Label styles={labelTitleStyles}>{'Nº de Sentencias a recuperar (de 1 a 10)'}</Label>
                   <Slider
                     // label="Nº de Sentencias a recuperar (de 1 a 10)"
                     min={0}
@@ -210,7 +211,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     }}
                     styles={controlStyles}
                   />
-                  <Label styles={labelStyles}>{'Tamaño de la imagen (de 50 a 1000)'}</Label>
+                  <Label styles={labelTitleStyles}>{'Tamaño de la imagen (de 50 a 1000)'}</Label>
                   <Slider
                     // label="tamaño de la imagen (de 50 a 1000)"
                     min={50}
@@ -223,7 +224,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     }}
                     styles={controlStyles}
                   />
-                  <Label styles={labelStyles}>{'Nº de páginas a recuperar (de 1 a 20)'}</Label>
+                  <Label styles={labelTitleStyles}>{'Nº de páginas a recuperar (de 1 a 20)'}</Label>
                   <Slider
                     // label="tamaño de la imagen (de 50 a 1000)"
                     min={1}
@@ -251,7 +252,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
               </PivotItem>
               <PivotItem headerText="Formato" itemIcon="DeveloperTools">
                 <Stack>
-                  <Label styles={labelStyles}>{'Modo de Depuración'}</Label>
+                  <Label styles={labelTitleStyles}>{'Modo de Depuración'}</Label>
                   <Toggle
                     // label={'Mostrar respuesta JSON'}
                     checked={this.state.enDesarrollo}
@@ -263,7 +264,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     offText={'Activar Depuración'}
                     styles={controlStyles}
                   />
-                  <Label styles={labelStyles}>{'Tamaño fijado del panel'}</Label>
+                  <Label styles={labelTitleStyles}>{'Tamaño fijado del panel'}</Label>
                   <Slider
                     // label="Tamaño fijado del panel"
                     min={200}
@@ -277,7 +278,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     }}
                     styles={controlStyles}
                   />
-                  <Label styles={labelStyles}>{'Orientación'}</Label>
+                  <Label styles={labelTitleStyles}>{'Orientación'}</Label>
                   <Dropdown
                     // label={'Orientación'}
                     selectedKey={this.state.panelOrientation.key}
@@ -290,7 +291,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     options={comboOrientation}
                     styles={controlStyles}
                   />
-                  <Label styles={labelStyles}>{'Borde y Sombra'}</Label>
+                  <Label styles={labelTitleStyles}>{'Borde y Sombra'}</Label>
                   <Toggle
                     // label={'Mostrar respuesta JSON'}
                     checked={this.state.bordeYSombra}
@@ -302,7 +303,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     offText={'Añadir borde y sombra'}
                     styles={controlStyles}
                   />
-                  <Label styles={labelStyles}>{'Texto para el Enlace a la Wiki'}</Label>
+                  <Label styles={labelTitleStyles}>{'Texto para el Enlace a la Wiki'}</Label>
                   <ComboBox
                     selectedKey={this.state.selectComboLinkTextKey}
                     allowFreeform={true}
@@ -321,7 +322,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                       }
                     }}
                   />
-                  <Label styles={labelStyles}>{'Ejemplos de Uso'}</Label>
+                  <Label styles={labelTitleStyles}>{'Ejemplos de Uso'}</Label>
                   <PrimaryButton
                     onClick={(ev) => {
                       this.setState({ isPanelOpen: true })
@@ -405,6 +406,54 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                   </Modal>
                 </Stack>
               </PivotItem>
+
+              <PivotItem headerText="Créditos" itemIcon="Info">
+                <Stack>
+                  <Label styles={labelTitleStyles}>{'Idea y trabajo inicial'}</Label>
+                  <Link styles={controlStyles} href={'https://github.com/lmoreso'} target='_blank'>@lmoreso</Link>
+                  <Label styles={labelTitleStyles}>{'Configuración de Búsqueda'}</Label>
+                  <label style={labelControlStyle}>
+                    Cuando cambies cualquier parámetro, se activará el botón 'Busca en Wikipedia', el cual lanza la query y pinta los resultados
+                    en el panel derecho, según el formato establecido en la pestaña 'Formato'.
+                  </label>
+                  <Label styles={labelTitleStyles}>{'Configuración de Formato'}</Label>
+                  <label style={labelControlStyle}>
+                    El cambio de cualquier parámetro se refleja directamente en el panel derecho.
+                  </label>
+                  <Label styles={labelTitleStyles}>{'Clona la aplicación'}</Label>
+                  <Link styles={controlStyles} href={'https://github.com/lmoreso/search-wiki.git'} target='_blank'>https://github.com/lmoreso/search-wiki.git</Link>
+                  <Label styles={labelTitleStyles}>{'Built Using'}</Label>
+                  <ul>
+                    <li>
+                      <Link styles={controlStyles} href={'https://nodejs.org/en/'} target='_blank'>NodeJs</Link>
+                      <span style={labelStyle as React.CSSProperties}>- Entorno de desarrollo.</span>
+                    </li>
+                    <li>
+                      <Link styles={controlStyles} href={'https://reactjs.org/'} target='_blank'>ReactJs</Link>
+                      <span style={labelStyle as React.CSSProperties}>- Web Framework.</span>
+                    </li>
+                    <li>
+                      <Link styles={controlStyles} href={'https://developer.microsoft.com/en-us/fluentui#/controls/web/'} target='_blank'>FluentUI</Link>
+                      <span style={labelStyle as React.CSSProperties}>- Web UI Framework.</span>
+                    </li>
+                    <li>
+                      <Link styles={controlStyles} href={'https://www.typescriptlang.org/docs/'} target='_blank'>Typescript</Link>
+                      <span style={labelStyle as React.CSSProperties}>- Lenguaje principal.</span>
+                    </li>
+                  </ul>
+                  <Label styles={labelTitleStyles}>{'Agradecimientos'}</Label>
+                  <ul>
+                    <li>
+                      <Link styles={controlStyles} href={'https://www.mediawiki.org/wiki/MediaWiki'} target='_blank'>Mediawiki</Link>
+                      <span style={labelStyle as React.CSSProperties}>- Por publicar servicios REST.</span>
+                    </li>
+                    <li>
+                      <Link styles={controlStyles} href={'https://wikimediafoundation.org/'} target='_blank'>Wikipedia</Link>
+                      <span style={labelStyle as React.CSSProperties}>- Por la gestión de los contenidos.</span>
+                    </li>
+                  </ul>
+                </Stack>
+              </PivotItem>
             </Pivot>
             <div style={{ margin: '10px' }}></div>
             {/* </Panel> */}
@@ -415,7 +464,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
             numPagesToSearch={this._searchWikiProps.numPagesToSearch}
             fixedSize={this._searchWikiProps.fixedSize}
             numChars={this._searchWikiProps.numChars}
-            enDesarrollo={this._searchWikiProps.enDesarrollo}
+            activarDepuracion={this._searchWikiProps.enDesarrollo}
             numSentences={this._searchWikiProps.numSentences}
             plainText={this._searchWikiProps.plainText}
             imageSize={this._searchWikiProps.imageSize}
