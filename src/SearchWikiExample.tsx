@@ -65,11 +65,11 @@ interface ISearchWikiPropsStates {
   enDesarrollo: boolean;
   bordeYSombra: boolean;
   textLinkWiki?: string;
+  catchErrors: boolean;
 }
 
 interface ISearchWikiExampleEstates extends ISearchWikiPropsStates {
   canUpdate: boolean;
-  confBusqueda: boolean;
   isPanelOpen: boolean;
   selectComboSearchTextKey: string | number | undefined;
   selectComboLinkTextKey: string | number | undefined;
@@ -86,11 +86,12 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
     numSentences: EXTRACT_WIKI_DEFAULTS.numSentences!,
     imageSize: EXTRACT_WIKI_DEFAULTS.imageSize!,
     numPagesToSearch: 5,
-    enDesarrollo: true,
-    panelOrientation: comboOrientation[1],
+    enDesarrollo: false,
+    panelOrientation: comboOrientation[2],
     bordeYSombra: true,
     fixedSize: 250,
-    textLinkWiki: 'Saber-ne mes ...'
+    textLinkWiki: 'Saber-ne mes ...',
+    catchErrors: false,
   };
 
   public constructor(props: SearchWikiExampleProps) {
@@ -99,7 +100,6 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
     this.state = {
       ...this._searchWikiProps,
       canUpdate: false,
-      confBusqueda: true,
       isPanelOpen: false,
       selectComboSearchTextKey: 'C',
       isModalOpen: false,
@@ -131,7 +131,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
           <Stack styles={{
             root: {
               margin: '10px', borderStyle: 'solid', borderWidth: '1px', borderColor: 'gray', boxShadow: '5px 5px 5px gray',
-              height: '640px', width: '330px', overflow: 'hidden',
+              height: '700px', width: '330px', overflow: 'hidden',
             }
           }}>
             <Label style={{ fontSize: 'large', fontWeight: 'lighter', textAlign: 'center' }}>{'Configuración <SearchWiki />'}</Label>
@@ -246,6 +246,16 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     offText={'Activar Depuración'}
                     styles={controlStyles}
                   />
+                  <Label styles={labelTitleStyles}>{'Control de Errores'}</Label>
+                  <Toggle
+                    checked={this.state.catchErrors}
+                    onChange={(event: any, checked?: boolean | undefined): void => {
+                      this.setState({ catchErrors: checked!, canUpdate: true });
+                    }}
+                    onText={'Desactivar Control de Errores'}
+                    offText={'Activar Control de Errores'}
+                    styles={controlStyles}
+                  />
                   <DefaultButton
                     onClick={(ev) => {
                       this._searchWikiProps = this.state;
@@ -353,9 +363,10 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                           panelOrientation={panelOrientations.auto}
                           textLinkWiki={this._searchWikiProps.textLinkWiki}
                           debugMode={this._searchWikiProps.enDesarrollo}
-                          onWikiError={(textErr: string) => {
-                            // En este caso (Tooltip) no hago nada y el Tooltip aparece vacio y pequeñito.
-                          }}
+                          onWikiError={(!this._searchWikiProps.catchErrors) ? undefined :
+                            (textErr: string) => {
+                              // En este caso (Tooltip) no hago nada y el Tooltip aparece vacio y pequeñito.
+                            }}
                         />
                     }}
                     calloutProps={{
@@ -387,6 +398,10 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                       panelOrientation={panelOrientations.portrait}
                       textLinkWiki={this._searchWikiProps.textLinkWiki}
                       debugMode={this._searchWikiProps.enDesarrollo}
+                      onWikiError={(!this._searchWikiProps.catchErrors) ? undefined :
+                        (textErr: string) => {
+                          this.setState({ isPanelOpen: false })
+                        }}
                     />
                   </Panel>
                   <Modal
@@ -405,9 +420,10 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                       panelOrientation={panelOrientations.landscape}
                       textLinkWiki={this._searchWikiProps.textLinkWiki}
                       debugMode={this._searchWikiProps.enDesarrollo}
-                      onWikiError={(textErr: string) => {
-                        this.setState({ isModalOpen: false })
-                      }}
+                      onWikiError={(!this._searchWikiProps.catchErrors) ? undefined :
+                        (textErr: string) => {
+                          this.setState({ isModalOpen: false })
+                        }}
                     />
                   </Modal>
                 </Stack>
@@ -481,6 +497,10 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
               margin: '10px'
             }}
             textLinkWiki={this._searchWikiProps.textLinkWiki}
+            onWikiError={(!this._searchWikiProps.catchErrors) ? undefined :
+              (textErr: string) => {
+
+              }}
           />
         </Stack>
       </Fabric>

@@ -76,6 +76,8 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
       || this.props.imageSize !== prevProps.imageSize
       || this.props.numPagesToSearch !== prevProps.numPagesToSearch
       || this.props.debugMode !== prevProps.debugMode
+      || (this.props.onWikiError == undefined && prevProps.onWikiError != undefined)
+      || (this.props.onWikiError != undefined && prevProps.onWikiError == undefined)
     ) {
       this._searchWiki();
     }
@@ -97,29 +99,28 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
   }
 
   private _renderTitle(props: { titulo: string; hidden?: boolean; numPages?: number; style?: React.CSSProperties }): JSX.Element {
+    let height = '22px';
     if (props.hidden)
-      return (
-        <span></span>
-      )
+      return (null as any);
     else if (!props.numPages || props.numPages <= 1)
       return (
-        <Label style={{ fontSize: 'medium', fontWeight: 'lighter', ...props.style, textAlign: 'center' }} >{props.titulo}</Label>
+        <Stack verticalAlign='start' style={{ ...props.style, height: height, overflow: 'hidden' }}>
+          <span style={{ fontSize: 'medium', fontWeight: 'lighter', textAlign: 'center' }} >{props.titulo}</span>
+        </Stack>
       )
     else
       return (
-        <Stack horizontal horizontalAlign='space-between' verticalAlign='center' style={{ ...props.style }}>
+        <Stack horizontal horizontalAlign='space-between' verticalAlign='center' style={{ ...props.style, height: height, overflow: 'hidden' }}>
           <IconButton
-            hidden={true}
             iconProps={{ iconName: 'ChevronLeft' }}
             onClick={(ev) => { this.onChangePage(this.state.pageIndex! - 1) }}
-            style={{ ...props.style }}
+            style={{ ...props.style, height: height }}
           />
-          <Label style={{ fontSize: 'medium', fontWeight: 'lighter', textAlign: 'center', ...props.style }} >{props.titulo}</Label>
+          <span style={{ fontSize: 'medium', fontWeight: 'lighter', textAlign: 'center', ...props.style, height: height }} >{props.titulo}</span>
           <IconButton
-            hidden={false}
             iconProps={{ iconName: 'ChevronRight' }}
             onClick={(ev) => { this.onChangePage(this.state.pageIndex! + 1) }}
-            style={{ ...props.style }}
+            style={{ ...props.style, height: height }}
           />
         </Stack>
       );
@@ -164,17 +165,23 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
       let divsBorder: string | undefined = (this.props.debugMode) ? '1px solid red' : undefined;
 
       // Estilos según orientación
-      const divRootPadding: number = 2;
       const divMargin: number = 2;
       let divImagenWidth: number;
       let divTextWidth: number;
 
+      const divRootPadding: number = 2;
       let divRootCSS: React.CSSProperties = {
         overflow: 'hidden',
         ...this.props.rootStyle,
         padding: divRootPadding,
       }
-
+      if (landscape) {
+        divRootCSS.maxWidth = `${this.props.fixedSize * 3}px`;
+        divRootCSS.height = `${this.props.fixedSize}px`;
+      } else {
+        divRootCSS.width = `${this.props.fixedSize}px`;
+        divRootCSS.maxHeight = `1000px`;
+      }
       let divImageCSS: React.CSSProperties = {
         margin: `${divMargin}px`,
         overflow: 'hidden',
@@ -191,65 +198,55 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
       }
 
       if (landscape) {
-        divImagenWidth = (aspectRatio) ? Math.round(this.props.fixedSize * aspectRatio! - divMargin * 2) : 0;
-        // divTextWidth = Math.round((this.props.fixedSize - divMargin * 2) * ((aspectRatio) ? aspectRatio : 1));
+        divRootCSS.height = `${this.props.fixedSize}px`;
+        divRootCSS.width = undefined;
+        divRootCSS.maxWidth = `${this.props.fixedSize * 4}px`;
+        divImagenWidth = (aspectRatio) ? Math.round(this.props.fixedSize * aspectRatio! - divRootPadding * 2) : 0;
+        if (divImagenWidth > this.props.fixedSize * 1.9)
+          divImagenWidth = Math.round(this.props.fixedSize * 1.9);
         divTextWidth = this.props.fixedSize - divMargin * 2;
-
-        divRootCSS.maxWidth = `${this.props.fixedSize * 3}px`;
-        divImageCSS.height = `${this.props.fixedSize}px`
+        divImageCSS.height = `${this.props.fixedSize - divMargin * 2 - divRootPadding * 2 - 2}px`;
       } else {
+        divRootCSS.width = `${this.props.fixedSize}px`;
+        divRootCSS.maxHeight = `1000px`;
+        divRootCSS.height = undefined;
         divTextWidth = this.props.fixedSize - divMargin * 2 - divRootPadding * 2 - 2;
         divImagenWidth = (aspectRatio) ? divTextWidth : 0;
-
-        divRootCSS.width = `${this.props.fixedSize}px`;
         divImageCSS.maxHeight = `${this.props.fixedSize}px`
       }
       divImageCSS.width = `${divImagenWidth}px`
       divTextCSS.width = `${divTextWidth}px`
 
       return (
-        <Stack horizontal={!landscape} >
-          <Stack horizontal={landscape} style={divRootCSS} >
-            <this._renderTitle titulo={titulo} hidden={landscape} numPages={this._wikiRes.length} style={divsBorderCSS} />
-            <div style={divImageCSS}>
-              <Image
-                src={imagenUrl}
-                height={(landscape) ? '100%' : undefined}
-                width={(!landscape) ? '100%' : undefined}
-              />
-            </div>
-            <Stack style={divTextCSS} >
-              <this._renderTitle titulo={titulo} hidden={!landscape} numPages={this._wikiRes.length} style={divsBorderCSS} />
-              {(this.props.plainText) ?
-                <div style={{ textAlign: 'justify', border: divsBorder }} >{htmlOrText}</div>
-                :
-                <div style={{ textAlign: 'justify', border: divsBorder }} dangerouslySetInnerHTML={{ __html: htmlOrText }} />
-              }
-              <Link
-                hidden={(!this.props.textLinkWiki || this.props.textLinkWiki.length == 0)}
-                href={enlace}
-                target='_blank'
-                styles={{ root: { marginTop: '2px', border: divsBorder, textAlign: 'center' } }}
-              >
-                <Stack horizontal horizontalAlign='center' verticalAlign='center'>
-                  <Image src={`${this.props.rootUrl}/favicon.ico`} width='25px' height='25px' />
-                  {this.props.textLinkWiki}
-                </Stack>
-              </Link>
-            </Stack>
-            <div style={{ margin: (landscape) ? undefined : '10px', border: divsBorder }} />
+        <Stack horizontal={landscape} style={divRootCSS} >
+          <this._renderTitle titulo={titulo} hidden={landscape} numPages={this._wikiRes.length} style={divsBorderCSS} />
+          <div style={divImageCSS}>
+            <Image
+              src={imagenUrl}
+              height={(landscape) ? '100%' : undefined}
+              width={(!landscape) ? '100%' : undefined}
+            />
+          </div>
+          <Stack style={divTextCSS} >
+            <this._renderTitle titulo={titulo} hidden={!landscape} numPages={this._wikiRes.length} style={divsBorderCSS} />
+            {(this.props.plainText) ?
+              <div style={{ textAlign: 'justify', border: divsBorder }} >{htmlOrText}</div>
+              :
+              <div style={{ textAlign: 'justify', border: divsBorder }} dangerouslySetInnerHTML={{ __html: htmlOrText }} />
+            }
+            <Link
+              hidden={(!this.props.textLinkWiki || this.props.textLinkWiki.length == 0)}
+              href={enlace}
+              target='_blank'
+              styles={{ root: { marginTop: '2px', border: divsBorder, textAlign: 'center' } }}
+            >
+              <Stack horizontal horizontalAlign='center' verticalAlign='center'>
+                <Image src={`${this.props.rootUrl}/favicon.ico`} width='25px' height='25px' />
+                {this.props.textLinkWiki}
+              </Stack>
+            </Link>
           </Stack>
-
-          {/*
-          (!this.props.debugMode) ? null :
-            <div style={{ alignItems: 'left', textAlign: 'left', marginLeft: '5px', maxWidth: '1024px' }}>
-              <Label>SearchWikiProps</Label>
-              <pre style={{ textAlign: 'left' }} >{JSON.stringify(this.props, null, 2)}</pre>
-              {(!this._txtError) ? null :
-                <Label>{this._txtError}</Label>
-              }
-            </div>
-            */}
+          <div style={{ margin: (landscape) ? undefined : '10px', border: divsBorder }} />
         </Stack>
       )
     }
