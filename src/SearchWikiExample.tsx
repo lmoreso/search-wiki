@@ -12,6 +12,7 @@ import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import { getTheme, ITheme, } from 'office-ui-fabric-react/lib/Styling';
 
 import { panelOrientations, SearchWiki } from './SearchWiki';
+import { EXTRACT_WIKI_DEFAULTS } from './ExtractWiki';
 
 interface SearchWikiExampleProps {
 
@@ -22,6 +23,7 @@ const comboIdiomes: Array<IDropdownOption> = [
   { key: 'ES', text: 'https://es.wikipedia.org' },
   { key: 'FR', text: 'https://fr.wikipedia.org' },
   { key: 'CA', text: 'https://ca.wikipedia.org' },
+  { key: 'XX', text: 'https://noexiste.wikipedia.org' },
 ];
 
 const comboTextLinkWiki: Array<IComboBoxOption> = [
@@ -69,7 +71,7 @@ interface ISearchWikiExampleEstates extends ISearchWikiPropsStates {
   canUpdate: boolean;
   confBusqueda: boolean;
   isPanelOpen: boolean;
-  selectComboSearchTextKey: string | number;
+  selectComboSearchTextKey: string | number | undefined;
   selectComboLinkTextKey: string | number | undefined;
   isModalOpen: boolean;
 }
@@ -79,15 +81,15 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
   private _searchWikiProps: ISearchWikiPropsStates = {
     wikiUrl: comboIdiomes[1],
     textToSearch: 'Belgrado',//'Guernica, pintura de Picasso',
-    fixedSize: 250,
-    numChars: 300,
-    plainText: true,
-    numSentences: 0,
-    imageSize: 250,
-    numPagesToSearch: 10,
-    enDesarrollo: false,
+    numChars: EXTRACT_WIKI_DEFAULTS.numChars!,
+    plainText: EXTRACT_WIKI_DEFAULTS.plainText!,
+    numSentences: EXTRACT_WIKI_DEFAULTS.numSentences!,
+    imageSize: EXTRACT_WIKI_DEFAULTS.imageSize!,
+    numPagesToSearch: 5,
+    enDesarrollo: true,
     panelOrientation: comboOrientation[1],
     bordeYSombra: true,
+    fixedSize: 250,
     textLinkWiki: 'Saber-ne mes ...'
   };
 
@@ -129,7 +131,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
           <Stack styles={{
             root: {
               margin: '10px', borderStyle: 'solid', borderWidth: '1px', borderColor: 'gray', boxShadow: '5px 5px 5px gray',
-              height: '580px', width: '330px', overflow: 'hidden',
+              height: '640px', width: '330px', overflow: 'hidden',
             }
           }}>
             <Label style={{ fontSize: 'large', fontWeight: 'lighter', textAlign: 'center' }}>{'Configuración <SearchWiki />'}</Label>
@@ -154,13 +156,10 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     options={comboTextSearch}
                     styles={controlStyles}
                     onChange={(ev, op: IComboBoxOption, index: number, newValue: string) => {
-                      let newText = (op) ? op.text : newValue;
-                      if (newText && newText.length) {
-                        if (op)
-                          this.setState({ textToSearch: newText, selectComboSearchTextKey: op.key, canUpdate: true })
-                        else
-                          this.setState({ textToSearch: newText, canUpdate: true })
-
+                      if (op) {
+                        this.setState({ textToSearch: op.text, selectComboSearchTextKey: op.key, canUpdate: true })
+                      } else {
+                        this.setState({ textToSearch: newValue, selectComboSearchTextKey: undefined, canUpdate: true })
                       }
                     }}
                   />
@@ -237,6 +236,16 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     }}
                     styles={controlStyles}
                   />
+                  <Label styles={labelTitleStyles}>{'Modo de Depuración'}</Label>
+                  <Toggle
+                    checked={this.state.enDesarrollo}
+                    onChange={(event: any, checked?: boolean | undefined): void => {
+                      this.setState({ enDesarrollo: checked!, canUpdate: true });
+                    }}
+                    onText={'Desactivar Depuración'}
+                    offText={'Activar Depuración'}
+                    styles={controlStyles}
+                  />
                   <DefaultButton
                     onClick={(ev) => {
                       this._searchWikiProps = this.state;
@@ -252,18 +261,6 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
               </PivotItem>
               <PivotItem headerText="Formato" itemIcon="DeveloperTools">
                 <Stack>
-                  <Label styles={labelTitleStyles}>{'Modo de Depuración'}</Label>
-                  <Toggle
-                    // label={'Mostrar respuesta JSON'}
-                    checked={this.state.enDesarrollo}
-                    onChange={(event: any, checked?: boolean | undefined): void => {
-                      this._searchWikiProps.enDesarrollo = checked!;
-                      this.setState({ enDesarrollo: checked! });
-                    }}
-                    onText={'Desactivar Depuración'}
-                    offText={'Activar Depuración'}
-                    styles={controlStyles}
-                  />
                   <Label styles={labelTitleStyles}>{'Tamaño fijado del panel'}</Label>
                   <Slider
                     // label="Tamaño fijado del panel"
@@ -355,6 +352,10 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                           imageSize={this._searchWikiProps.imageSize}
                           panelOrientation={panelOrientations.auto}
                           textLinkWiki={this._searchWikiProps.textLinkWiki}
+                          debugMode={this._searchWikiProps.enDesarrollo}
+                          onWikiError={(textErr: string) => {
+                            // En este caso (Tooltip) no hago nada y el Tooltip aparece vacio y pequeñito.
+                          }}
                         />
                     }}
                     calloutProps={{
@@ -367,7 +368,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                       style={{ fontSize: 'smaller', fontWeight: 'lighter', }}
                     >
                       Pasa el ratón para ver el 'Tooltip' (Orientación automática, 1 sola página)
-                  </PrimaryButton>
+                    </PrimaryButton>
                   </TooltipHost>
                   <Panel
                     isLightDismiss
@@ -385,6 +386,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                       imageSize={this._searchWikiProps.imageSize}
                       panelOrientation={panelOrientations.portrait}
                       textLinkWiki={this._searchWikiProps.textLinkWiki}
+                      debugMode={this._searchWikiProps.enDesarrollo}
                     />
                   </Panel>
                   <Modal
@@ -402,6 +404,10 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                       imageSize={this._searchWikiProps.imageSize}
                       panelOrientation={panelOrientations.landscape}
                       textLinkWiki={this._searchWikiProps.textLinkWiki}
+                      debugMode={this._searchWikiProps.enDesarrollo}
+                      onWikiError={(textErr: string) => {
+                        this.setState({ isModalOpen: false })
+                      }}
                     />
                   </Modal>
                 </Stack>
@@ -464,7 +470,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
             numPagesToSearch={this._searchWikiProps.numPagesToSearch}
             fixedSize={this._searchWikiProps.fixedSize}
             numChars={this._searchWikiProps.numChars}
-            activarDepuracion={this._searchWikiProps.enDesarrollo}
+            debugMode={this._searchWikiProps.enDesarrollo}
             numSentences={this._searchWikiProps.numSentences}
             plainText={this._searchWikiProps.plainText}
             imageSize={this._searchWikiProps.imageSize}

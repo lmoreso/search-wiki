@@ -4,21 +4,21 @@ import { Label } from 'office-ui-fabric-react/lib/Label';
 import { Link } from 'office-ui-fabric-react/lib/Link';
 import { Image } from 'office-ui-fabric-react/lib/Image';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
+import { Stack } from 'office-ui-fabric-react/lib/Stack';
 
-import { ExtractWiki, IExtractWikiProps, IWikiExtractResult } from './ExtractWiki';
-import { Stack } from 'office-ui-fabric-react';
+import { ExtractWiki, IExtractWikiProps, IWikiExtractPage, } from './ExtractWiki';
 
 export enum panelOrientations { landscape, portrait, auto }
 
 export interface ISearchWikiProps extends IExtractWikiProps {
   fixedSize: number;
-  activarDepuracion?: boolean;
   panelOrientation?: panelOrientations;
   rootStyle?: React.CSSProperties;
   textLinkWiki?: string;
+  onWikiError?: (textErr: string) => void
 }
 
-enum fetchResults { loading, loadedOk, loadedErr }
+enum fetchResults { loading, loadedOk, loadedErr, nothing }
 
 interface ISearchWikiStates {
   fetchResult: fetchResults;
@@ -27,7 +27,7 @@ interface ISearchWikiStates {
 
 export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiStates> {
   private _txtError: string;
-  private _wikiRes: IWikiExtractResult;
+  private _wikiRes: Array<IWikiExtractPage>;
 
   public constructor(props: ISearchWikiProps) {
     super(props);
@@ -42,20 +42,25 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
   }
 
   private _searchWiki() {
-    if (this.props.textToSearch && this.props.textToSearch.length > 0) {
+    if (this.props.onWikiError) {
+      this.setState({ fetchResult: fetchResults.nothing });
+    } else {
       this.setState({ fetchResult: fetchResults.loading });
-      ExtractWiki(this.props)
-        .then((res: IWikiExtractResult) => {
-          // console.log(res)
-          this._wikiRes = res;
-          this.setState({ fetchResult: fetchResults.loadedOk, pageIndex: 0, })
-        })
-        .catch((error) => {
-          console.log(error);
-          this._txtError = error.toString();
-          this.setState({ fetchResult: fetchResults.loadedErr, pageIndex: undefined })
-        });
     }
+
+    ExtractWiki(this.props)
+      .then((res: Array<IWikiExtractPage>) => {
+        this._wikiRes = res;
+        this.setState({ fetchResult: fetchResults.loadedOk, pageIndex: 0, })
+      })
+      .catch((error) => {
+        this._txtError = error.toString();
+        if (this.props.onWikiError) {
+          this.props.onWikiError(error);
+        } else {
+          this.setState({ fetchResult: fetchResults.loadedErr, pageIndex: undefined })
+        }
+      });
   }
 
   public componentDidMount() {
@@ -70,6 +75,7 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
       || this.props.numSentences !== prevProps.numSentences
       || this.props.imageSize !== prevProps.imageSize
       || this.props.numPagesToSearch !== prevProps.numPagesToSearch
+      || this.props.debugMode !== prevProps.debugMode
     ) {
       this._searchWiki();
     }
@@ -78,11 +84,11 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
   private onChangePage(newValue: any): void {
     let newIndex = Number(newValue);
     newIndex = (newIndex || newIndex == 0) ?
-      (newIndex >= this._wikiRes.numPages) ?
+      (newIndex >= this._wikiRes.length) ?
         0
         :
         (newIndex < 0) ?
-          this._wikiRes.numPages - 1
+          this._wikiRes.length - 1
           :
           newIndex
       :
@@ -120,7 +126,9 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
   }
 
   public render(): JSX.Element {
-    if (this.state.fetchResult === fetchResults.loadedErr) {
+    if (this.state.fetchResult === fetchResults.nothing) {
+      return (null as any);
+    } else if (this.state.fetchResult === fetchResults.loadedErr) {
       return (
         <div style={{ width: `${this.props.fixedSize}px` }}>
           <Label>{'ERROR'}</Label>
@@ -137,7 +145,7 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
       )
     } else {
       // Determinar orientación
-      let thePage = this._wikiRes.extractPages![this.state.pageIndex!];
+      let thePage = this._wikiRes[this.state.pageIndex!];
       let htmlOrText = thePage.textOrHtml;
       let titulo = thePage.title;
       let enlace = thePage.link;
@@ -153,7 +161,7 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
       }
 
       // Estilos para Depuración
-      let divsBorder: string | undefined = (this.props.activarDepuracion) ? '1px solid red' : undefined;
+      let divsBorder: string | undefined = (this.props.debugMode) ? '1px solid red' : undefined;
 
       // Estilos según orientación
       const divRootPadding: number = 2;
@@ -202,7 +210,7 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
       return (
         <Stack horizontal={!landscape} >
           <Stack horizontal={landscape} style={divRootCSS} >
-            <this._renderTitle titulo={titulo} hidden={landscape} numPages={this._wikiRes.numPages} style={divsBorderCSS} />
+            <this._renderTitle titulo={titulo} hidden={landscape} numPages={this._wikiRes.length} style={divsBorderCSS} />
             <div style={divImageCSS}>
               <Image
                 src={imagenUrl}
@@ -211,7 +219,7 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
               />
             </div>
             <Stack style={divTextCSS} >
-              <this._renderTitle titulo={titulo} hidden={!landscape} numPages={this._wikiRes.numPages} style={divsBorderCSS} />
+              <this._renderTitle titulo={titulo} hidden={!landscape} numPages={this._wikiRes.length} style={divsBorderCSS} />
               {(this.props.plainText) ?
                 <div style={{ textAlign: 'justify', border: divsBorder }} >{htmlOrText}</div>
                 :
@@ -232,19 +240,16 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
             <div style={{ margin: (landscape) ? undefined : '10px', border: divsBorder }} />
           </Stack>
 
-          {(!this.props.activarDepuracion) ? null :
+          {/*
+          (!this.props.debugMode) ? null :
             <div style={{ alignItems: 'left', textAlign: 'left', marginLeft: '5px', maxWidth: '1024px' }}>
-              <Label>URL</Label>
-              <a href={this._wikiRes.queryUrl} target='_blank'>{this._wikiRes.queryUrl}</a>
               <Label>SearchWikiProps</Label>
               <pre style={{ textAlign: 'left' }} >{JSON.stringify(this.props, null, 2)}</pre>
-              {(!this._wikiRes.textError || this._wikiRes.textError.length === 0) ? null :
-                <Label>{this._wikiRes.textError}</Label>
+              {(!this._txtError) ? null :
+                <Label>{this._txtError}</Label>
               }
-              {/* <Label>{`Se han encontrado ${this._wikiRes.numPages} Páginas`}</Label>
-              <pre style={{ textAlign: 'left' }} >{JSON.stringify(this._wikiRes.extractPages, null, 2)}</pre> */}
             </div>
-          }
+            */}
         </Stack>
       )
     }
