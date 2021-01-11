@@ -12,7 +12,7 @@ import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import { getTheme, ITheme, } from 'office-ui-fabric-react/lib/Styling';
 
 import { panelOrientations, SearchWiki } from './SearchWiki';
-import { EXTRACT_WIKI_DEFAULTS } from './ExtractWiki';
+import { EXTRACT_WIKI_DEFAULTS, SEARCH_WIKI_VERSION } from './ExtractWiki';
 
 interface SearchWikiExampleProps {
 
@@ -27,6 +27,7 @@ const comboIdiomes: Array<IDropdownOption> = [
 ];
 
 const comboTextLinkWiki: Array<IComboBoxOption> = [
+  { key: 'VA', text: '' },
   { key: 'EN', text: 'Go https://en.wikipedia.org' },
   { key: 'ES', text: 'Ir a Wikipedia ...' },
   { key: 'FR', text: 'Aller a le Wiki' },
@@ -45,12 +46,17 @@ const comboTextSearch: Array<IComboBoxOption> = [
   { key: 'B', text: 'Picasso' },
   { key: 'C', text: 'Guernica, pintura de Picasso' },
   { key: 'D', text: 'Belgrado' },
-  { key: 'divider', text: '-', itemType: SelectableOptionMenuItemType.Divider },
+  { key: 'divider1', text: '-', itemType: SelectableOptionMenuItemType.Divider },
   { key: 'Header2', text: 'English', itemType: SelectableOptionMenuItemType.Header },
   { key: 'E', text: 'Picasso' },
   { key: 'F', text: 'Barcelone' },
   { key: 'G', text: 'Belgrade' },
-]
+  { key: 'divider2', text: '-', itemType: SelectableOptionMenuItemType.Divider },
+  { key: 'Header3', text: 'Página Inexistente', itemType: SelectableOptionMenuItemType.Header },
+  { key: 'X', text: 'Asxcdfg' },
+  { key: 'Z', text: '' },
+];
+const TEXT_TO_SEARCH_DEFAULT_INDEX = 4;
 
 interface ISearchWikiPropsStates {
   wikiUrl: IDropdownOption;
@@ -66,6 +72,7 @@ interface ISearchWikiPropsStates {
   bordeYSombra: boolean;
   textLinkWiki?: string;
   catchErrors: boolean;
+  isDevelopMode: boolean;
 }
 
 interface ISearchWikiExampleEstates extends ISearchWikiPropsStates {
@@ -80,18 +87,19 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
   private _theme: ITheme = getTheme();
   private _searchWikiProps: ISearchWikiPropsStates = {
     wikiUrl: comboIdiomes[1],
-    textToSearch: 'Belgrado',//'Guernica, pintura de Picasso',
+    textToSearch: comboTextSearch[TEXT_TO_SEARCH_DEFAULT_INDEX].text,
     numChars: EXTRACT_WIKI_DEFAULTS.numChars!,
     plainText: EXTRACT_WIKI_DEFAULTS.plainText!,
     numSentences: EXTRACT_WIKI_DEFAULTS.numSentences!,
     imageSize: EXTRACT_WIKI_DEFAULTS.imageSize!,
-    numPagesToSearch: 5,
+    numPagesToSearch: 10,
     enDesarrollo: false,
     panelOrientation: comboOrientation[2],
     bordeYSombra: true,
     fixedSize: 250,
     textLinkWiki: 'Saber-ne mes ...',
     catchErrors: false,
+    isDevelopMode: false,
   };
 
   public constructor(props: SearchWikiExampleProps) {
@@ -101,13 +109,14 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
       ...this._searchWikiProps,
       canUpdate: false,
       isPanelOpen: false,
-      selectComboSearchTextKey: 'C',
+      selectComboSearchTextKey: comboTextSearch[TEXT_TO_SEARCH_DEFAULT_INDEX].key,
       isModalOpen: false,
       selectComboLinkTextKey: 'CA',
     }
 
     initializeIcons();
 
+    // console.log(`<SearchWiki/> V.${SEARCH_WIKI_VERSION}`);
     // this._renderHeader = this._renderHeader.bind(this);
   }
 
@@ -136,7 +145,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
           }}>
             <Label style={{ fontSize: 'large', fontWeight: 'lighter', textAlign: 'center' }}>{'Configuración <SearchWiki />'}</Label>
             <Pivot
-              linkSize={PivotLinkSize.large}
+              linkSize={PivotLinkSize.normal}
               linkFormat={PivotLinkFormat.tabs}
               styles={{
                 root: {
@@ -145,7 +154,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                 }
               }}
             >
-              <PivotItem headerText="Búsqueda" itemIcon="Globe">
+              <PivotItem headerText="Búsqueda" itemIcon="Globe" >
                 <Stack>
                   <Label styles={labelTitleStyles} >{'Texto a buscar en la Wiki'}</Label>
                   <ComboBox
@@ -298,9 +307,19 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     options={comboOrientation}
                     styles={controlStyles}
                   />
+                  <Label styles={labelTitleStyles}>{'Modo Desarrollo'}</Label>
+                  <Toggle
+                    checked={this.state.isDevelopMode}
+                    onChange={(event: any, checked?: boolean | undefined): void => {
+                      this._searchWikiProps.isDevelopMode = checked!;
+                      this.setState({ isDevelopMode: checked! });
+                    }}
+                    onText={'Modo Desarrollo Activado'}
+                    offText={'Modo Desarrollo Desactivado'}
+                    styles={controlStyles}
+                  />
                   <Label styles={labelTitleStyles}>{'Borde y Sombra'}</Label>
                   <Toggle
-                    // label={'Mostrar respuesta JSON'}
                     checked={this.state.bordeYSombra}
                     onChange={(event: any, checked?: boolean | undefined): void => {
                       this._searchWikiProps.bordeYSombra = checked!;
@@ -367,6 +386,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                             (textErr: string) => {
                               // En este caso (Tooltip) no hago nada y el Tooltip aparece vacio y pequeñito.
                             }}
+                          isDevelopMode={this._searchWikiProps.isDevelopMode}
                         />
                     }}
                     calloutProps={{
@@ -402,6 +422,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                         (textErr: string) => {
                           this.setState({ isPanelOpen: false })
                         }}
+                      isDevelopMode={this._searchWikiProps.isDevelopMode}
                     />
                   </Panel>
                   <Modal
@@ -424,6 +445,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                         (textErr: string) => {
                           this.setState({ isModalOpen: false })
                         }}
+                      isDevelopMode={this._searchWikiProps.isDevelopMode}
                     />
                   </Modal>
                 </Stack>
@@ -431,6 +453,9 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
 
               <PivotItem headerText="Créditos" itemIcon="Info">
                 <Stack>
+                  <Label styles={labelTitleStyles}>
+                    {`<SearchWiki/> Versión ${SEARCH_WIKI_VERSION}`}
+                  </Label>
                   <Label styles={labelTitleStyles}>{'Idea y trabajo inicial'}</Label>
                   <Link styles={controlStyles} href={'https://github.com/lmoreso'} target='_blank'>@lmoreso</Link>
                   <Label styles={labelTitleStyles}>{'Configuración de Búsqueda'}</Label>
@@ -501,6 +526,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
               (textErr: string) => {
 
               }}
+            isDevelopMode={this._searchWikiProps.isDevelopMode}
           />
         </Stack>
       </Fabric>

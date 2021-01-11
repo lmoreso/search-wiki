@@ -15,7 +15,8 @@ export interface ISearchWikiProps extends IExtractWikiProps {
   panelOrientation?: panelOrientations;
   rootStyle?: React.CSSProperties;
   textLinkWiki?: string;
-  onWikiError?: (textErr: string) => void
+  onWikiError?: (textErr: string) => void;
+  isDevelopMode?: boolean;
 }
 
 enum fetchResults { loading, loadedOk, loadedErr, nothing }
@@ -28,6 +29,7 @@ interface ISearchWikiStates {
 export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiStates> {
   private _txtError: string;
   private _wikiRes: Array<IWikiExtractPage>;
+  private _abortController = new AbortController();
 
   public constructor(props: ISearchWikiProps) {
     super(props);
@@ -48,7 +50,7 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
       this.setState({ fetchResult: fetchResults.loading });
     }
 
-    ExtractWiki(this.props)
+    ExtractWiki(this.props, this._abortController.signal)
       .then((res: Array<IWikiExtractPage>) => {
         this._wikiRes = res;
         this.setState({ fetchResult: fetchResults.loadedOk, pageIndex: 0, })
@@ -65,6 +67,10 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
 
   public componentDidMount() {
     this._searchWiki();
+  }
+
+  public componentWillUnmount() {
+    this._abortController.abort();
   }
 
   public componentDidUpdate(prevProps: ISearchWikiProps) {
@@ -127,18 +133,44 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
   }
 
   public render(): JSX.Element {
+    // Estilos para Depuración
+    // let divsBorder: string | undefined = (this.props.isDevelopMode) ? '1px solid red' : (this.props.rootStyle && this.props.rootStyle.border) ? this.props.rootStyle.border as string : undefined;
+    let divsBorder: string | undefined = (this.props.isDevelopMode) ? '1px solid red' : undefined;
+
+    // Estilos root por defecto 
+    const divRootCSSConst: React.CSSProperties = {
+      overflow: 'hidden',
+      ...this.props.rootStyle,
+      border: (divsBorder) ? divsBorder : (this.props.rootStyle && this.props.rootStyle.border) ? this.props.rootStyle.border as string : undefined,
+    }
+    const divRootPadding: number = 2;
+    let divRootCSS: React.CSSProperties = {
+      ...divRootCSSConst,
+      padding: divRootPadding * 2,
+      alignItems: 'center',
+    }
+    if (this.props.panelOrientation !== panelOrientations.landscape) {
+      // Orientación Vertical
+      divRootCSS.width = `${this.props.fixedSize}px`;
+      divRootCSS.minHeight = `${Math.round(this.props.fixedSize * 0.5)}px`;
+    } else {
+      // Orientación Horizontal
+      divRootCSS.height = `${this.props.fixedSize}px`;
+      divRootCSS.maxWidth = `${Math.round(this.props.fixedSize * 1.5)}px`;
+      divRootCSS.minWidth = `${this.props.fixedSize}px`;
+    }
+
     if (this.state.fetchResult === fetchResults.nothing) {
       return (null as any);
     } else if (this.state.fetchResult === fetchResults.loadedErr) {
       return (
-        <div style={{ width: `${this.props.fixedSize}px` }}>
-          <Label>{'ERROR'}</Label>
+        <div style={{ ...divRootCSS }}>
           <Label>{this._txtError}</Label>
         </div>
       )
     } else if (this.state.fetchResult === fetchResults.loading) {
       return (
-        <div style={{ width: `${this.props.fixedSize}px` }}>
+        <div style={{ ...divRootCSS }}>
           <Spinner
             size={SpinnerSize.large}
           />
@@ -161,27 +193,11 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
         landscape = true;
       }
 
-      // Estilos para Depuración
-      let divsBorder: string | undefined = (this.props.debugMode) ? '1px solid red' : undefined;
-
       // Estilos según orientación
       const divMargin: number = 2;
       let divImagenWidth: number;
       let divTextWidth: number;
 
-      const divRootPadding: number = 2;
-      let divRootCSS: React.CSSProperties = {
-        overflow: 'hidden',
-        ...this.props.rootStyle,
-        padding: divRootPadding,
-      }
-      if (landscape) {
-        divRootCSS.maxWidth = `${this.props.fixedSize * 3}px`;
-        divRootCSS.height = `${this.props.fixedSize}px`;
-      } else {
-        divRootCSS.width = `${this.props.fixedSize}px`;
-        divRootCSS.maxHeight = `1000px`;
-      }
       let divImageCSS: React.CSSProperties = {
         margin: `${divMargin}px`,
         overflow: 'hidden',
@@ -197,10 +213,15 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
         border: divsBorder,
       }
 
+      divRootCSS = {
+        ...divRootCSSConst,
+        padding: divRootPadding,
+      }
+
       if (landscape) {
+        divRootCSS.maxWidth = `${this.props.fixedSize * 4}px`;
         divRootCSS.height = `${this.props.fixedSize}px`;
         divRootCSS.width = undefined;
-        divRootCSS.maxWidth = `${this.props.fixedSize * 4}px`;
         divImagenWidth = (aspectRatio) ? Math.round(this.props.fixedSize * aspectRatio! - divRootPadding * 2) : 0;
         if (divImagenWidth > this.props.fixedSize * 1.9)
           divImagenWidth = Math.round(this.props.fixedSize * 1.9);

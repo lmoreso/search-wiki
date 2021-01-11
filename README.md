@@ -2,7 +2,7 @@
   <a href="" rel="noopener">
  <img width=200px height=200px src="https://i.imgur.com/6wj0hh6.jpg" alt="Project logo"></a>
 </p> -->
-
+<a name="top"></a>
 <h1 align="center">search-wiki-example</h1>
 
 <div align="center">
@@ -16,28 +16,26 @@
 
 ---
 
-<p align="left"> 
+<p > 
 SearchWiki es un componente React realizado con FluentUI, y, por tanto, escrito en Typescript, que es capaz de lanzar una consulta a cualquier Wiki (como Wikipedia), extraer un extracto del artículo(s) encontrado(s) (primeras frases y foto principal) y mostrarlos en el navegador. 
 </p>
 
-## 📝 Table of Contents
-
-
+## Table of Contents
 - [About](#about)
-- [Getting Started](#getting_started)
+- [Getting Started](#getting-started)
 - [Usage](#usage)
-- [Built Using](#built_using)
+- [Built Using](#built-using)
 - [Authors](#authors)
-- [Acknowledgments](#acknowledgement)
+- [Acknowledgments](#acknowledgements)
 
-## 🧐 About <a name = "about"></a>
+## About 
 
 SearchWiki es un componente React realizado con FluentUI, y, por tanto, escrito en Typescript, que es capaz de lanzar una consulta a cualquier Wiki (como Wikipedia), extraer un extracto (primeros párrafos y foto principal) del artículo(s) encontrado(s) y mostrarlos en el navegador. 
 - Puede utilizarse en Tooltips, en los Paneles Modales y laterales de FluentUI, y donde se te ocurra.
 - Esta aplicación muestra ejemplos de uso y configuración del componente.
 - [Pincha aquí para probar la aplicación.](https://lmoreso.neocities.org/search-wiki-example/index.html)
 
-## 🏁 Getting Started <a name = "getting_started"></a>
+## Getting Started
 
 Esta aplicación ha sido creada con create-react-app, con lo cual es muy facil de utilizar:
 - Clona la aplicación en una carpeta de tu PC (por ejemplo, 'search-wiki-example').
@@ -60,7 +58,7 @@ You can now view search-wiki in the browser.
   ```
 
 
-## 🎈 Usage <a name="usage"></a>
+## Usage 
 La aplicación consta de 2 paneles:
 1. El panel izquierdo, para configurar el componente, se divide en dos pestañas:
   -  Búsqueda, para configurar los parámetros de la llamada a la API de MediaWiki.
@@ -70,33 +68,35 @@ La aplicación consta de 2 paneles:
 <br>
 <img height=250px src="./search-wiki-example-capture.png">
 
-### 🎈 Configuración de la Búsqueda <a name="usage-search"></a>
+### Configuración de la Búsqueda <a name="usage-search"></a>
 Cuando cambies cualquier parámetro, se activará el botón 'Busca en Wikipedia', el cual lanza la query y pinta los resultados en el panel derecho, según el formato establecido en la pestaña 'Formato'.
 
-### 🎈 Configuración del Formato de presentación <a name="usage-formato"></a>
+### Configuración del Formato de presentación <a name="usage-formato"></a>
 El cambio de cualquier parámetro se refleja directamente en el resultado.
 
-### 🎈 Resultado <a name="usage-resultado"></a>
+### Resultado <a name="usage-resultado"></a>
 El resultado consta de 4 elementos:
 - Título: es el título de la página encontrada, no el texto de búsqueda. Si has pedido mas de una página aparecen unas flechas para navegar entre cada una de ellas.
 - Fotografía: es la foto devuelta por la API.
 - Extracto: es el texto devuelto por la API.
 - Enlace a la página de Wikipedia. Sólo se pinta si se ha suministrado un texto para el enlace.
 
-## ⛏️ Built Using <a name = "built_using"></a>
+## Built Using 
 
 - [NodeJs](https://nodejs.org/en/) - Server Environment
 - [ReactJs](https://reactjs.org/) - Web Framework
 - [FluentUI](https://developer.microsoft.com/en-us/fluentui#/controls/web/) - UI Framework
 - [Typescript](https://www.typescriptlang.org/docs/)
 
-## ✍️ Authors <a name = "authors"></a>
+## Authors
 
 - [@lmoreso](https://github.com/lmoreso) - Idea & Initial work
 
 <!-- See also the list of [contributors](https://github.com/lmoreso/search-wiki/contributors) who participated in this project. -->
 
-## 🎉 Acknowledgements <a name = "acknowledgement"></a>
+## Acknowledgements 
 
 - [Mediawiki](https://www.mediawiki.org/wiki/MediaWiki) - Por publicar los servicios REST.
 - [Wikipedia](https://wikimediafoundation.org/) - Por la gestión de los contenidos.
+
+[Table of Contents](#table-of-contents)

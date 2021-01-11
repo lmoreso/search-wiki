@@ -1,3 +1,5 @@
+export const SEARCH_WIKI_VERSION = '0.1.3';
+
 export interface IExtractWikiProps {
     textToSearch: string;
     rootUrl?: string;
@@ -32,7 +34,7 @@ export interface IWikiExtractPage {
     };
 }
 
-export async function ExtractWiki(props: IExtractWikiProps): Promise<IWikiExtractPage[]> {
+export async function ExtractWiki(props: IExtractWikiProps, abortSignal: AbortSignal): Promise<IWikiExtractPage[]> {
     let parWiki: IExtractWikiProps = {
         ...props
     };
@@ -89,11 +91,11 @@ export async function ExtractWiki(props: IExtractWikiProps): Promise<IWikiExtrac
         // Realizar la Query
         let restResponse: Response;
         try {
-            restResponse = await fetch(queryUrl);
+            restResponse = await fetch(queryUrl, {signal: abortSignal});
         } catch (error) {
             let textError = `The call to Wikipedia returned an error: ${error}`;
             console.log(textError);
-            if (!props.debugMode) {
+            if (!props.debugMode && !(error instanceof DOMException)) {
                 console.log('* ExtractWiki props');
                 console.log(parWiki);
                 console.log('* Query URL:');
