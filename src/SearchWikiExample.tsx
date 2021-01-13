@@ -10,9 +10,12 @@ import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { Panel } from 'office-ui-fabric-react/lib/Panel';
 import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import { getTheme, ITheme, } from 'office-ui-fabric-react/lib/Styling';
-
-import { panelOrientations, SearchWiki } from './SearchWiki';
-import { EXTRACT_WIKI_DEFAULTS, SEARCH_WIKI_VERSION } from './ExtractWiki';
+// Ubicación real de las carpetas
+// import { panelOrientations, SearchWiki } from './package/search-wiki/SearchWiki';
+// import { EXTRACT_WIKI_DEFAULTS, SEARCH_WIKI_VERSION } from './package/search-wiki/ExtractWiki';
+// En node-modules tengo un enlace a la carpeta real llamado 'search-wiki'.
+import { panelOrientations, SearchWiki } from 'search-wiki/SearchWiki';
+import { EXTRACT_WIKI_DEFAULTS, SEARCH_WIKI_VERSION } from 'search-wiki/ExtractWiki';
 
 interface SearchWikiExampleProps {
 
