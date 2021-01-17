@@ -11,11 +11,11 @@ import { Panel } from 'office-ui-fabric-react/lib/Panel';
 import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import { getTheme, ITheme, } from 'office-ui-fabric-react/lib/Styling';
 // Ubicación real de las carpetas
-// import { panelOrientations, SearchWiki } from './package/search-wiki/SearchWiki';
-// import { EXTRACT_WIKI_DEFAULTS, SEARCH_WIKI_VERSION } from './package/search-wiki/ExtractWiki';
+import { panelOrientations, SearchWiki } from './package/search-wiki/SearchWiki';
+import { EXTRACT_WIKI_DEFAULTS, EXTRACT_WIKI_VERSION } from './package/search-wiki/ExtractWiki';
 // En node-modules tengo un enlace a la carpeta real llamado 'search-wiki'.
-import { panelOrientations, SearchWiki } from 'search-wiki/SearchWiki';
-import { EXTRACT_WIKI_DEFAULTS, SEARCH_WIKI_VERSION } from 'search-wiki/ExtractWiki';
+// import { panelOrientations, SearchWiki } from 'search-wiki/SearchWiki';
+// import { EXTRACT_WIKI_DEFAULTS, SEARCH_WIKI_VERSION } from 'search-wiki/ExtractWiki';
 
 interface SearchWikiExampleProps {
 
@@ -457,7 +457,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
               <PivotItem headerText="Créditos" itemIcon="Info">
                 <Stack>
                   <Label styles={labelTitleStyles}>
-                    {`<SearchWiki/> Versión ${SEARCH_WIKI_VERSION}`}
+                    {`<SearchWiki/> Versión ${EXTRACT_WIKI_VERSION}`}
                   </Label>
                   <Label styles={labelTitleStyles}>{'Idea y trabajo inicial'}</Label>
                   <Link styles={controlStyles} href={'https://github.com/lmoreso'} target='_blank'>@lmoreso</Link>

@@ -1,17 +1,6 @@
-export const SEARCH_WIKI_VERSION = '0.1.3';
+export const EXTRACT_WIKI_VERSION = '0.1.4';
 
-export interface IExtractWikiProps {
-    textToSearch: string;
-    rootUrl?: string;
-    numPagesToSearch?: number;
-    plainText?: boolean;
-    numChars?: number;
-    numSentences?: number,
-    imageSize?: number,
-    debugMode?: boolean
-}
-
-export const EXTRACT_WIKI_DEFAULTS: IExtractWikiProps = {
+export const EXTRACT_WIKI_DEFAULTS = {
     textToSearch: 'Belgrado', //'Guernica, pintura de Picasso',
     rootUrl: 'https://es.wikipedia.org',
     numPagesToSearch: 1,
@@ -21,21 +10,8 @@ export const EXTRACT_WIKI_DEFAULTS: IExtractWikiProps = {
     imageSize: 250
 }
 
-export interface IWikiExtractPage {
-    pageId: string;
-    index: number;
-    textOrHtml: string;
-    title: string;
-    link: string;
-    image?: {
-        url: string;
-        width: number;
-        height: number;
-    };
-}
-
-export async function ExtractWiki(props: IExtractWikiProps, abortSignal: AbortSignal): Promise<IWikiExtractPage[]> {
-    let parWiki: IExtractWikiProps = {
+export async function ExtractWiki(props, abortSignal = undefined) {
+    let parWiki = {
         ...props
     };
     if (!props.rootUrl)
@@ -89,7 +65,7 @@ export async function ExtractWiki(props: IExtractWikiProps, abortSignal: AbortSi
         }
 
         // Realizar la Query
-        let restResponse: Response;
+        let restResponse;
         try {
             restResponse = await fetch(queryUrl, {signal: abortSignal});
         } catch (error) {
@@ -110,7 +86,7 @@ export async function ExtractWiki(props: IExtractWikiProps, abortSignal: AbortSi
         }
 
         // Procesar la respuesta
-        let dataWiki: any;
+        let dataWiki;
         try {
             dataWiki = await restResponse.json();
             if (props.debugMode) {
@@ -148,10 +124,10 @@ export async function ExtractWiki(props: IExtractWikiProps, abortSignal: AbortSi
 
         // Convertir la respuesta en array de páginas
         try {
-            let extractPages = new Array<IWikiExtractPage>();
+            let extractPages = new Array();
             let pagesId = Object.keys(dataWiki.query.pages);
             pagesId.forEach((aPageId) => {
-                let thePage: IWikiExtractPage = {
+                let thePage = {
                     pageId: aPageId,
                     textOrHtml: dataWiki.query.pages[aPageId].extract,
                     title: dataWiki.query.pages[aPageId].title,
@@ -168,7 +144,7 @@ export async function ExtractWiki(props: IExtractWikiProps, abortSignal: AbortSi
                 extractPages.push(thePage);
             });
             // Ordenar el array de páginas por relevancia (En el JSON no vienen ordenados)
-            extractPages = extractPages.sort((a: IWikiExtractPage, b: IWikiExtractPage) => (a.index > b.index) ? 1 : -1);
+            extractPages = extractPages.sort((a, b) => (a.index > b.index) ? 1 : -1);
             if (props.debugMode) {
                 console.log('* Array of Pages');
                 console.log(extractPages);
