@@ -11,8 +11,11 @@ import { Panel } from 'office-ui-fabric-react/lib/Panel';
 import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import { getTheme, ITheme, } from 'office-ui-fabric-react/lib/Styling';
 // Ubicación real de las carpetas
-import { panelOrientations, SearchWiki } from './package/search-wiki/SearchWiki';
+import { SearchWikiFlUI } from './package/search-wiki/SearchWikiFUI';
+import { ISearchWikiProps } from './package/search-wiki/SearchWikiProps';
 import { EXTRACT_WIKI_DEFAULTS, EXTRACT_WIKI_VERSION } from './package/search-wiki/ExtractWiki';
+import { panelOrientations } from './package/search-wiki/SearchWikiProps';
+import { SearchWiki } from './package/search-wiki/SearchWiki';
 // En node-modules tengo un enlace a la carpeta real llamado 'search-wiki'.
 // import { panelOrientations, SearchWiki } from 'search-wiki/SearchWiki';
 // import { EXTRACT_WIKI_DEFAULTS, SEARCH_WIKI_VERSION } from 'search-wiki/ExtractWiki';
@@ -84,6 +87,7 @@ interface ISearchWikiExampleEstates extends ISearchWikiPropsStates {
   selectComboSearchTextKey: string | number | undefined;
   selectComboLinkTextKey: string | number | undefined;
   isModalOpen: boolean;
+  isFluentUI: boolean;
 }
 
 export class SearchWikiExample extends React.Component<SearchWikiExampleProps, ISearchWikiExampleEstates> {
@@ -115,16 +119,59 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
       selectComboSearchTextKey: comboTextSearch[TEXT_TO_SEARCH_DEFAULT_INDEX].key,
       isModalOpen: false,
       selectComboLinkTextKey: 'CA',
+      isFluentUI: true,
     }
 
     initializeIcons();
 
     // console.log(`<SearchWiki/> V.${SEARCH_WIKI_VERSION}`);
-    // this._renderHeader = this._renderHeader.bind(this);
+    this.renderSearchWiki = this.renderSearchWiki.bind(this);
+    // this.renderSearchWiki = this.renderSearchWiki.bind(this);
   }
 
   public componentDidMount() {
 
+  }
+
+  private renderSearchWiki(params: ISearchWikiProps): JSX.Element {
+    if (this.state.isFluentUI)
+      return (
+        <SearchWikiFlUI
+          textToSearch={params.textToSearch}
+          rootUrl={params.rootUrl}
+          fixedSize={params.fixedSize}
+          numChars={params.numChars}
+          numPagesToSearch={params.numPagesToSearch}
+          numSentences={params.numSentences}
+          plainText={params.plainText}
+          imageSize={params.imageSize}
+          panelOrientation={params.panelOrientation}
+          textLinkWiki={params.textLinkWiki}
+          debugMode={params.debugMode}
+          onWikiError={params.onWikiError}
+          isDevelopMode={params.isDevelopMode}
+          rootStyle={params.rootStyle}
+        />
+      )
+    else
+      return (
+        <SearchWiki
+          textToSearch={params.textToSearch}
+          rootUrl={params.rootUrl}
+          fixedSize={params.fixedSize}
+          numChars={params.numChars}
+          numPagesToSearch={params.numPagesToSearch}
+          numSentences={params.numSentences}
+          plainText={params.plainText}
+          imageSize={params.imageSize}
+          panelOrientation={params.panelOrientation}
+          textLinkWiki={params.textLinkWiki}
+          debugMode={params.debugMode}
+          onWikiError={params.onWikiError}
+          isDevelopMode={params.isDevelopMode}
+          rootStyle={params.rootStyle}
+        />
+      )
   }
 
   public render(): JSX.Element {
@@ -133,9 +180,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
     let labelTitleStyles: Partial<ILabelStyles> = { root: { textAlign: 'left', fontSize: 'smaller', margin: '0 10px 0px 10px', fontWeight: 'bolder', } };
     let controlStyles = { root: { margin: '0 10px 10px 10px', /* width: '300px',  */ } };
     let labelStyle: React.CSSProperties = { textAlign: 'left', fontSize: 'smaller', };
-    // let labelControlStyles: Partial<ILabelStyles> = { root: { margin: '0 10px 10px 10px', textAlign: 'left', fontSize: 'smaller', } };
     let labelControlStyle: React.CSSProperties = { textAlign: 'left', fontSize: 'smaller', margin: '0 10px 10px 10px', };
-
 
     return (
       <Fabric>
@@ -283,6 +328,16 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
               </PivotItem>
               <PivotItem headerText="Formato" itemIcon="DeveloperTools">
                 <Stack>
+                  <Label styles={labelTitleStyles}>{'Modo FluentUI'}</Label>
+                  <Toggle
+                    checked={this.state.isFluentUI}
+                    onChange={(event: any, checked?: boolean | undefined): void => {
+                      this.setState({ isFluentUI: checked! });
+                    }}
+                    onText={'Usando FluentUI'}
+                    offText={'Pulsa para cambiar a FluentUI'}
+                    styles={controlStyles}
+                  />
                   <Label styles={labelTitleStyles}>{'Tamaño fijado del panel'}</Label>
                   <Slider
                     // label="Tamaño fijado del panel"
@@ -373,7 +428,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                   <TooltipHost
                     tooltipProps={{
                       onRenderContent: () =>
-                        <SearchWiki
+                        <this.renderSearchWiki
                           textToSearch={this._searchWikiProps.textToSearch}
                           rootUrl={this._searchWikiProps.wikiUrl.text}
                           fixedSize={this._searchWikiProps.fixedSize}
@@ -409,7 +464,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     isOpen={this.state.isPanelOpen}
                     onDismiss={() => this.setState({ isPanelOpen: false })}
                   >
-                    <SearchWiki
+                    <this.renderSearchWiki
                       textToSearch={this._searchWikiProps.textToSearch}
                       rootUrl={this._searchWikiProps.wikiUrl.text}
                       fixedSize={this._searchWikiProps.fixedSize}
@@ -432,7 +487,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     isOpen={this.state.isModalOpen}
                     onDismiss={() => this.setState({ isModalOpen: false })}
                   >
-                    <SearchWiki
+                    <this.renderSearchWiki
                       textToSearch={this._searchWikiProps.textToSearch}
                       rootUrl={this._searchWikiProps.wikiUrl.text}
                       fixedSize={this._searchWikiProps.fixedSize}
@@ -508,7 +563,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
             <div style={{ margin: '10px' }}></div>
             {/* </Panel> */}
           </Stack>
-          <SearchWiki
+          <this.renderSearchWiki
             textToSearch={this._searchWikiProps.textToSearch}
             rootUrl={this._searchWikiProps.wikiUrl.text}
             numPagesToSearch={this._searchWikiProps.numPagesToSearch}

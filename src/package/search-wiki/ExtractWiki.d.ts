@@ -6,37 +6,37 @@ export declare const EXTRACT_WIKI_VERSION: string;
 
 /**
  * props para la llamada a ExtractWiki.
- * Sólo es obligatorio el texto a buscar, aunque puede estar vacío.
- * El resto de parámetros, si no se proporcionan, cogen el valor de @EXTRACT_WIKI_DEFAULTS.  
+ * - Sólo es obligatorio el texto a buscar, aunque puede estar vacío.
+ * - El resto de parámetros, si no se proporcionan, cogen el valor de @EXTRACT_WIKI_DEFAULTS.  
  */
 export interface IExtractWikiProps {
     /** Texto a buscar en la Wiki. */
     textToSearch: string;
     /** URL de la Wiki (por defecto 'https://es.wikipedia.org'). */
     rootUrl?: string;
-    /** Nº de resultados a recuperar (por defecto 1).*/
+    /** Nº de artículos a recuperar (por defecto 1).*/
     numPagesToSearch?: number;
     /** 
-     * Por defecto es true, se solicita a la Wiki texto plano.
-     * La misma Wikipedia no aconseja solicitar html (false).
+     * - Por defecto se solicita a la Wiki texto plano (true).
+     * - La misma Wikipedia desaconseja solicitar html (false).
      */
     plainText?: boolean;
     /** 
      * Nº de caracteres a recuperar. 
-     * Es incompatible con la propiedad 'numSentences', sobre la cual tiene preferencia.
-     * El valor por defecto es 300. 
+     * - Es incompatible con la propiedad 'numSentences', sobre la cual tiene preferencia.
+     * - El valor por defecto es 300. 
      */
     numChars?: number;
     /** 
      * Nº de sentencias o frases a recuperar. 
-     * Es incompatible con la propiedad 'numChars' la cual tiene preferencia sobre esta.
-     * El valor por defecto es 0. 
+     * - Es incompatible con la propiedad 'numChars' la cual tiene preferencia sobre esta.
+     * - El valor por defecto es 0. 
      */
     numSentences?: number,
     /** 
      * Tamaño de la imagen.
-     * Valor por defecto 250.
-     * Consulta la API de wikimedia para saber mas sobre este parámetro: https://www.mediawiki.org/wiki/API:Search.
+     * - Valor por defecto 250.
+     * - [Consulta la API de wikimedia para saber mas sobre este parámetro](https://www.mediawiki.org/wiki/API:Search).
      */
     imageSize?: number,
     /** Vuelca trazas en la consola, como la URL final y los resultados de la llamada al API. */

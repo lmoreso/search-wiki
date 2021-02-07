@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
+import { Label } from 'office-ui-fabric-react/lib/Label';
+import { Link } from 'office-ui-fabric-react/lib/Link';
 import { Image } from 'office-ui-fabric-react/lib/Image';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { Stack } from 'office-ui-fabric-react/lib/Stack';
@@ -8,7 +10,7 @@ import { ExtractWiki, IWikiExtractPage, } from './ExtractWiki';
 import { fetchStates, ISearchWikiProps, ISearchWikiStates, panelOrientations } from './SearchWikiProps';
 
 
-export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiStates> {
+export class SearchWikiFlUI extends React.Component<ISearchWikiProps, ISearchWikiStates> {
   private _txtError: string;
   private _wikiRes: Array<IWikiExtractPage>;
   private _abortController = new AbortController();
@@ -146,7 +148,7 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
     } else if (this.state.fetchState === fetchStates.loadedErr) {
       return (
         <div style={{ ...divRootCSS }}>
-          <label>{this._txtError}</label>
+          <Label>{this._txtError}</Label>
         </div>
       )
     } else if (this.state.fetchState === fetchStates.loading) {
@@ -236,17 +238,17 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
               :
               <div style={{ textAlign: 'justify', border: divsBorder }} dangerouslySetInnerHTML={{ __html: htmlOrText }} />
             }
-            <a
+            <Link
               hidden={(!this.props.textLinkWiki || this.props.textLinkWiki.length == 0)}
               href={enlace}
               target='_blank'
-              style={{  marginTop: '2px', border: divsBorder, textAlign: 'center' } }
+              styles={{ root: { marginTop: '2px', border: divsBorder, textAlign: 'center' } }}
             >
               <Stack horizontal horizontalAlign='center' verticalAlign='center'>
                 <Image src={`${this.props.rootUrl}/favicon.ico`} width='25px' height='25px' />
                 {this.props.textLinkWiki}
               </Stack>
-            </a>
+            </Link>
           </Stack>
           <div style={{ margin: (landscape) ? undefined : '10px', border: divsBorder }} />
         </Stack>
