@@ -1,11 +1,8 @@
 import * as React from 'react';
-import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
-import { Image } from 'office-ui-fabric-react/lib/Image';
-import { IconButton } from 'office-ui-fabric-react/lib/Button';
-import { Stack } from 'office-ui-fabric-react/lib/Stack';
 
 import { ExtractWiki, IWikiExtractPage, } from './ExtractWiki';
 import { fetchStates, ISearchWikiProps, ISearchWikiStates, panelOrientations } from './SearchWikiProps';
+import * as Iconos from './iconos';
 
 
 export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiStates> {
@@ -87,30 +84,32 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
   }
 
   private _renderTitle(props: { titulo: string; hidden?: boolean; numPages?: number; style?: React.CSSProperties }): JSX.Element {
-    let height = '22px';
+    let height = '28px';
     if (props.hidden)
       return (null as any);
     else if (!props.numPages || props.numPages <= 1)
       return (
-        <Stack verticalAlign='start' style={{ ...props.style, height: height, overflow: 'hidden' }}>
+        <div style={{ ...props.style, height: height, overflow: 'hidden', textAlign: 'center'  }}>
           <span style={{ fontSize: 'medium', fontWeight: 'lighter', textAlign: 'center' }} >{props.titulo}</span>
-        </Stack>
+        </div>
       )
     else
       return (
-        <Stack horizontal horizontalAlign='space-between' verticalAlign='center' style={{ ...props.style, height: height, overflow: 'hidden' }}>
-          <IconButton
-            iconProps={{ iconName: 'ChevronLeft' }}
-            onClick={(ev) => { this.onChangePage(this.state.pageIndex! - 1) }}
-            style={{ ...props.style, height: height }}
-          />
+        <div style={{ ...props.style, height: height, overflow: 'hidden',
+          display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
+        >
+          <span onClick={(ev) => { this.onChangePage(this.state.pageIndex! - 1) }} style={{cursor: 'pointer'}}>
+            <Iconos.ChevronLeft
+              // style={{ ...props.style, height: height }}
+            />
+          </span>
           <span style={{ fontSize: 'medium', fontWeight: 'lighter', textAlign: 'center', ...props.style, height: height }} >{props.titulo}</span>
-          <IconButton
-            iconProps={{ iconName: 'ChevronRight' }}
-            onClick={(ev) => { this.onChangePage(this.state.pageIndex! + 1) }}
-            style={{ ...props.style, height: height }}
-          />
-        </Stack>
+          <span onClick={(ev) => { this.onChangePage(this.state.pageIndex! + 1) }} style={{cursor: 'pointer'}}>
+            <Iconos.ChevronRight
+              // style={{ ...props.style, height: height }}
+            />
+          </span>
+        </div>
       );
   }
 
@@ -151,10 +150,8 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
       )
     } else if (this.state.fetchState === fetchStates.loading) {
       return (
-        <div style={{ ...divRootCSS }}>
-          <Spinner
-            size={SpinnerSize.large}
-          />
+        <div style={{ ...divRootCSS, textAlign: 'center' }}>
+          <Iconos.IconoSpinner />
         </div>
       )
     } else {
@@ -220,16 +217,16 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
       divTextCSS.width = `${divTextWidth}px`
 
       return (
-        <Stack horizontal={landscape} style={divRootCSS} >
+        <div style={{...divRootCSS, display: 'flex', flexDirection: (landscape)? 'row' : 'column'}} >
           <this._renderTitle titulo={titulo} hidden={landscape} numPages={this._wikiRes.length} style={divsBorderCSS} />
-          <div style={divImageCSS}>
-            <Image
+          <div style={divImageCSS} hidden={!imagenUrl}>
+            <img
               src={imagenUrl}
               height={(landscape) ? '100%' : undefined}
               width={(!landscape) ? '100%' : undefined}
             />
           </div>
-          <Stack style={divTextCSS} >
+          <div style={divTextCSS} >
             <this._renderTitle titulo={titulo} hidden={!landscape} numPages={this._wikiRes.length} style={divsBorderCSS} />
             {(this.props.plainText) ?
               <div style={{ textAlign: 'justify', border: divsBorder }} >{htmlOrText}</div>
@@ -240,20 +237,17 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
               hidden={(!this.props.textLinkWiki || this.props.textLinkWiki.length == 0)}
               href={enlace}
               target='_blank'
-              style={{  marginTop: '2px', border: divsBorder, textAlign: 'center' } }
+              style={{ marginTop: '2px', border: divsBorder, textAlign: 'center' }}
             >
-              <Stack horizontal horizontalAlign='center' verticalAlign='center'>
-                <Image src={`${this.props.rootUrl}/favicon.ico`} width='25px' height='25px' />
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}} >
+                <img src={`${this.props.rootUrl}/favicon.ico`} width='25px' height='25px' />
                 {this.props.textLinkWiki}
-              </Stack>
+              </div>
             </a>
-          </Stack>
+          </div>
           <div style={{ margin: (landscape) ? undefined : '10px', border: divsBorder }} />
-        </Stack>
+        </div>
       )
     }
-
-
   }
-
 }

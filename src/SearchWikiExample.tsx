@@ -119,7 +119,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
       selectComboSearchTextKey: comboTextSearch[TEXT_TO_SEARCH_DEFAULT_INDEX].key,
       isModalOpen: false,
       selectComboLinkTextKey: 'CA',
-      isFluentUI: true,
+      isFluentUI: false,
     }
 
     initializeIcons();
