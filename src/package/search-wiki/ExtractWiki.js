@@ -1,4 +1,4 @@
-export const EXTRACT_WIKI_VERSION = '0.1.4';
+export const EXTRACT_WIKI_VERSION = '0.0.2.1';
 
 export const EXTRACT_WIKI_DEFAULTS = {
     textToSearch: 'Belgrado', //'Guernica, pintura de Picasso',
@@ -128,6 +128,7 @@ export async function ExtractWiki(props, abortSignal = undefined) {
             let pagesId = Object.keys(dataWiki.query.pages);
             pagesId.forEach((aPageId) => {
                 let thePage = {
+                    key: aPageId,
                     pageId: aPageId,
                     textOrHtml: dataWiki.query.pages[aPageId].extract,
                     title: dataWiki.query.pages[aPageId].title,
@@ -144,7 +145,11 @@ export async function ExtractWiki(props, abortSignal = undefined) {
                 extractPages.push(thePage);
             });
             // Ordenar el array de páginas por relevancia (En el JSON no vienen ordenados)
-            extractPages = extractPages.sort((a, b) => (a.index > b.index) ? 1 : -1);
+            let result = {
+                isHtml: parWiki.plainText,
+                rootUrl: parWiki.rootUrl,
+                pages = extractPages.sort((a, b) => (a.index > b.index) ? 1 : -1)
+            }
             if (props.debugMode) {
                 console.log('* Array of Pages');
                 console.log(extractPages);

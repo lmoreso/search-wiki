@@ -4,6 +4,25 @@
  */
 export declare const EXTRACT_WIKI_VERSION: string;
 
+export enum fetchStates { loading, loadedOk, loadedErr, nothing }
+
+export interface ISearchWikiStates {
+  fetchState: fetchStates;
+  pageIndex?: number;
+}
+
+/**
+ * Orientación del Panel resultado:
+ * - landscape: 
+ *        horizontal (foto a la izquierda, texto a la derecha).
+ * - portrait: 
+ *        vertical (foto arriba, texto abajo).
+ * - auto: 
+ *        vertical si la foto es mas ancha que alta.
+ *        horizontal si la foto es mas alta que ancha.
+ */
+export enum panelOrientations { landscape, portrait, auto }
+
 /**
  * props para la llamada a ExtractWiki.
  * - Sólo es obligatorio el texto a buscar, aunque puede estar vacío.
@@ -51,6 +70,7 @@ export declare const EXTRACT_WIKI_DEFAULTS: IExtractWikiProps;
  * ExtractWiki devuelve un array con tantas instancias como páginas encontradas.
  */
 export interface IWikiExtractPage {
+    key: string | number;
     /** Id. de la página devuelto por la API. */
     pageId: string;
     /** Cuando se solicita mas de una página, refleja la relevancia del resultado. La ocurrencia mas parecida al texto buscado viene con index = 1. */
@@ -72,10 +92,17 @@ export interface IWikiExtractPage {
     };
 }
 
+export interface IWikiExtractPages {
+    pages: IWikiExtractPage[];
+    rootUrl: string;
+    isHtml?: boolean;
+    txtError?: string;
+}
+
 /**
  * Recupera el extracto de uno o mas artículos de Wikipedia
  * @param props (IExtractWikiProps): paraḿetro obligatorio que sólo requiere el texto a buscar 'textToSearch'.
  * @param abortSignal (AbortSignal?): parámetro optativo.
  * @return Promise<IWikiExtractPage[]> Promesa de un array de IWikiExtractPage.
  */
-export declare function ExtractWiki(props: IExtractWikiProps, abortSignal?: AbortSignal): Promise<IWikiExtractPage[]>; 
+export declare function ExtractWiki(props: IExtractWikiProps, abortSignal?: AbortSignal): Promise<IWikiExtractPages>; 

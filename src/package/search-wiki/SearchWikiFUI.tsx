@@ -6,9 +6,8 @@ import { Image } from 'office-ui-fabric-react/lib/Image';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { Stack } from 'office-ui-fabric-react/lib/Stack';
 
-import { ExtractWiki, IWikiExtractPage, } from './ExtractWiki';
+import { ExtractWiki, IWikiExtractPage, IWikiExtractPages, } from './ExtractWiki';
 import { fetchStates, ISearchWikiProps, ISearchWikiStates, panelOrientations } from './SearchWikiProps';
-
 
 export class SearchWikiFlUI extends React.Component<ISearchWikiProps, ISearchWikiStates> {
   private _txtError: string;
@@ -35,8 +34,8 @@ export class SearchWikiFlUI extends React.Component<ISearchWikiProps, ISearchWik
     }
 
     ExtractWiki(this.props, this._abortController.signal)
-      .then((res: Array<IWikiExtractPage>) => {
-        this._wikiRes = res;
+      .then((res: IWikiExtractPages) => {
+        this._wikiRes = res.pages;
         this.setState({ fetchState: fetchStates.loadedOk, pageIndex: 0, })
       })
       .catch((error) => {

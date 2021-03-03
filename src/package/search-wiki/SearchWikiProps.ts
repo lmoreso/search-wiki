@@ -1,16 +1,5 @@
-import { IExtractWikiProps } from "./ExtractWiki";
+import { IExtractWikiProps, panelOrientations } from "./ExtractWiki";
 
-/**
- * Orientación del Panel resultado:
- * - landscape: 
- *        horizontal (foto a la izquierda, texto a la derecha).
- * - portrait: 
- *        vertical (foto arriba, texto abajo).
- * - auto: 
- *        vertical si la foto es mas ancha que alta.
- *        horizontal si la foto es mas alta que ancha.
- */
-export enum panelOrientations { landscape, portrait, auto }
 
 /**
  * Hereda las propiedades de @IExtractWikiProps y añade propiedades visuales
@@ -47,9 +36,3 @@ export interface ISearchWikiProps extends IExtractWikiProps {
   isDevelopMode?: boolean;
 }
 
-export enum fetchStates { loading, loadedOk, loadedErr, nothing }
-
-export interface ISearchWikiStates {
-  fetchState: fetchStates;
-  pageIndex?: number;
-}
