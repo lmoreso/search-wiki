@@ -61,9 +61,9 @@ La aplicación consta de 2 paneles:
 
 1. El panel izquierdo, para configurar el componente, se divide en dos pestañas:
 
-- Búsqueda, para configurar los parámetros de la llamada a la API de MediaWiki.
-- Formato, para configurar la presentación de los resultados.
-<!-- markdownlint-disable MD029 -->
+    - Búsqueda, para configurar los parámetros de la llamada a la API de MediaWiki.
+    - Formato, para configurar la presentación de los resultados.
+
 2. El panel derecho, donde se muestran los resultados.
 
 ![Pantallazo](./search-wiki-example-capture.png)
