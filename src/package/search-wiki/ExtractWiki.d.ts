@@ -39,7 +39,10 @@ export interface IExtractWikiProps {
      * - [Consulta la API de wikimedia para saber mas sobre este parámetro](https://www.mediawiki.org/wiki/API:Search).
      */
     imageSize?: number,
-    /** Vuelca trazas en la consola, como la URL final y los resultados de la llamada al API. */
+    /** 
+     * Vuelca trazas en la consola, como la URL final y los resultados de la llamada al API. 
+     * 
+     */
     debugMode?: boolean
 }
 
@@ -76,6 +79,6 @@ export interface IWikiExtractPage {
  * Recupera el extracto de uno o mas artículos de Wikipedia
  * @param props (IExtractWikiProps): paraḿetro obligatorio que sólo requiere el texto a buscar 'textToSearch'.
  * @param abortSignal (AbortSignal?): parámetro optativo.
- * @return Promise<IWikiExtractPage[]> Promesa de un array de IWikiExtractPage.
+ * @return Promise<IWikiExtractPage[]>: Promesa de un array de IWikiExtractPage.
  */
 export declare function ExtractWiki(props: IExtractWikiProps, abortSignal?: AbortSignal): Promise<IWikiExtractPage[]>; 
