@@ -21,14 +21,14 @@ export interface ISearchWikiProps extends IExtractWikiProps {
    *  - Se aplica al Ancho del panel resultado cuando la orientación es Vertical.
    *  - Se aplica al Alto del panel resultado cuando la orientación es Horizontal.
    */
-  fixedSize: number;
+  fixedSize?: number;
   /** 
    * Orientación del panel resultado 
    * - ver @panelOrientations.
    */
   panelOrientation?: panelOrientations;
   /**
-   * Estilo a aplicar en el contenedor de SearchWiki
+   * Estilo a aplicar en el contenedor principal
    */
   rootStyle?: React.CSSProperties;
   /**
@@ -47,9 +47,4 @@ export interface ISearchWikiProps extends IExtractWikiProps {
   isDevelopMode?: boolean;
 }
 
-export enum fetchStates { loading, loadedOk, loadedErr, nothing }
 
-export interface ISearchWikiStates {
-  fetchState: fetchStates;
-  pageIndex?: number;
-}

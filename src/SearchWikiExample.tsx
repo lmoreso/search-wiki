@@ -11,14 +11,14 @@ import { Panel } from 'office-ui-fabric-react/lib/Panel';
 import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import { getTheme, ITheme, } from 'office-ui-fabric-react/lib/Styling';
 // Ubicación real de las carpetas
-import { SearchWikiFlUI } from './package/search-wiki/SearchWikiFUI';
-import { ISearchWikiProps } from './package/search-wiki/SearchWikiProps';
 import { EXTRACT_WIKI_DEFAULTS, EXTRACT_WIKI_VERSION } from './package/search-wiki/ExtractWiki';
-import { panelOrientations } from './package/search-wiki/SearchWikiProps';
+import { ISearchWikiProps, panelOrientations } from './package/search-wiki/SearchWikiProps';
 import { SearchWiki } from './package/search-wiki/SearchWiki';
+import { Example } from './package/search-wiki/example';
 // En node-modules tengo un enlace a la carpeta real llamado 'search-wiki'.
-// import { panelOrientations, SearchWiki } from 'search-wiki/SearchWiki';
 // import { EXTRACT_WIKI_DEFAULTS, SEARCH_WIKI_VERSION } from 'search-wiki/ExtractWiki';
+// import { ISearchWikiProps, panelOrientations } from 'search-wiki/SearchWikiProps';
+// import { SearchWiki } from 'search-wiki/SearchWiki';
 
 interface SearchWikiExampleProps {
 
@@ -87,7 +87,7 @@ interface ISearchWikiExampleEstates extends ISearchWikiPropsStates {
   selectComboSearchTextKey: string | number | undefined;
   selectComboLinkTextKey: string | number | undefined;
   isModalOpen: boolean;
-  isFluentUI: boolean;
+  isExampleOpen: boolean;
 }
 
 export class SearchWikiExample extends React.Component<SearchWikiExampleProps, ISearchWikiExampleEstates> {
@@ -118,8 +118,8 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
       isPanelOpen: false,
       selectComboSearchTextKey: comboTextSearch[TEXT_TO_SEARCH_DEFAULT_INDEX].key,
       isModalOpen: false,
+      isExampleOpen: false,
       selectComboLinkTextKey: 'CA',
-      isFluentUI: false,
     }
 
     initializeIcons();
@@ -134,44 +134,24 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
   }
 
   private renderSearchWiki(params: ISearchWikiProps): JSX.Element {
-    if (this.state.isFluentUI)
-      return (
-        <SearchWikiFlUI
-          textToSearch={params.textToSearch}
-          rootUrl={params.rootUrl}
-          fixedSize={params.fixedSize}
-          numChars={params.numChars}
-          numPagesToSearch={params.numPagesToSearch}
-          numSentences={params.numSentences}
-          plainText={params.plainText}
-          imageSize={params.imageSize}
-          panelOrientation={params.panelOrientation}
-          textLinkWiki={params.textLinkWiki}
-          debugMode={params.debugMode}
-          onWikiError={params.onWikiError}
-          isDevelopMode={params.isDevelopMode}
-          rootStyle={params.rootStyle}
-        />
-      )
-    else
-      return (
-        <SearchWiki
-          textToSearch={params.textToSearch}
-          rootUrl={params.rootUrl}
-          fixedSize={params.fixedSize}
-          numChars={params.numChars}
-          numPagesToSearch={params.numPagesToSearch}
-          numSentences={params.numSentences}
-          plainText={params.plainText}
-          imageSize={params.imageSize}
-          panelOrientation={params.panelOrientation}
-          textLinkWiki={params.textLinkWiki}
-          debugMode={params.debugMode}
-          onWikiError={params.onWikiError}
-          isDevelopMode={params.isDevelopMode}
-          rootStyle={params.rootStyle}
-        />
-      )
+    return (
+      <SearchWiki
+        textToSearch={params.textToSearch}
+        rootUrl={params.rootUrl}
+        fixedSize={params.fixedSize}
+        numChars={params.numChars}
+        numPagesToSearch={params.numPagesToSearch}
+        numSentences={params.numSentences}
+        plainText={params.plainText}
+        imageSize={params.imageSize}
+        panelOrientation={params.panelOrientation}
+        textLinkWiki={params.textLinkWiki}
+        debugMode={params.debugMode}
+        onWikiError={params.onWikiError}
+        isDevelopMode={params.isDevelopMode}
+        rootStyle={params.rootStyle}
+      />
+    )
   }
 
   public render(): JSX.Element {
@@ -328,16 +308,6 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
               </PivotItem>
               <PivotItem headerText="Formato" itemIcon="DeveloperTools">
                 <Stack>
-                  <Label styles={labelTitleStyles}>{'Modo FluentUI'}</Label>
-                  <Toggle
-                    checked={this.state.isFluentUI}
-                    onChange={(event: any, checked?: boolean | undefined): void => {
-                      this.setState({ isFluentUI: checked! });
-                    }}
-                    onText={'Usando FluentUI'}
-                    offText={'Pulsa para cambiar a FluentUI'}
-                    styles={controlStyles}
-                  />
                   <Label styles={labelTitleStyles}>{'Tamaño fijado del panel'}</Label>
                   <Slider
                     // label="Tamaño fijado del panel"
@@ -459,6 +429,23 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                       Pasa el ratón para ver el 'Tooltip' (Orientación automática, 1 sola página)
                     </PrimaryButton>
                   </TooltipHost>
+                  <PrimaryButton
+                    onClick={(ev) => {
+                      this.setState({ isExampleOpen: true })
+                    }}
+                    styles={controlStyles}
+                    style={{ fontSize: 'smaller', fontWeight: 'lighter', }}
+                  >
+                    Ejecutar código de Ejemplo (en Panel Central)
+                  </PrimaryButton>
+
+                  <Modal
+                    isOpen={this.state.isExampleOpen}
+                    onDismiss={() => this.setState({ isExampleOpen: false })}
+                  >
+                    <Example />
+                  </Modal>
+                  
                   <Panel
                     isLightDismiss
                     isOpen={this.state.isPanelOpen}
