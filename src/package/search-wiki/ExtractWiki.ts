@@ -1,7 +1,7 @@
 /**
  * Versión del API ExtractWiki  
  */
-export const EXTRACT_WIKI_VERSION: string = '0.1.4';
+export const EXTRACT_WIKI_VERSION: string = '1.0.0';
 
 /**
  * props para la llamada a ExtractWiki.
