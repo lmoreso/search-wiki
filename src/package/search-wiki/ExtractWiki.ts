@@ -1,16 +1,109 @@
-export const EXTRACT_WIKI_VERSION = '0.1.4';
+/**
+ * Versión del API ExtractWiki  
+ */
+export const EXTRACT_WIKI_VERSION: string = '1.0.0';
 
-export const EXTRACT_WIKI_DEFAULTS = {
+/**
+ * props para la llamada a ExtractWiki.
+ * - Sólo es obligatorio el texto a buscar, aunque puede estar vacío.
+ * - El resto de parámetros, si no se proporcionan, cogen el valor de @EXTRACT_WIKI_DEFAULTS.  
+ */
+export interface IExtractWikiProps {
+    /** Texto a buscar en la Wiki. */
+    textToSearch: string;
+    /** URL de la Wiki (por defecto 'https://es.wikipedia.org'). */
+    rootUrl?: string;
+    /** Nº de artículos a recuperar (por defecto 1).*/
+    numPagesToSearch?: number;
+    /** 
+     * - Por defecto se solicita a la Wiki texto plano (true).
+     * - La misma Wikipedia desaconseja solicitar html (false).
+     */
+    plainText?: boolean;
+    /** 
+     * Nº de caracteres a recuperar. 
+     * - Es incompatible con la propiedad 'numSentences', sobre la cual tiene preferencia.
+     * - El valor por defecto es 300. 
+     */
+    numChars?: number;
+    /** 
+     * Nº de sentencias o frases a recuperar. 
+     * - Es incompatible con la propiedad 'numChars' la cual tiene preferencia sobre esta.
+     * - El valor por defecto es 0. 
+     */
+    numSentences?: number,
+    /** 
+     * Tamaño de la imagen.
+     * - Valor por defecto 250.
+     * - [Consulta la API de wikimedia para saber mas sobre este parámetro](https://www.mediawiki.org/wiki/API:Search).
+     */
+    imageSize?: number,
+    /** 
+     * Vuelca trazas en la consola, como la URL final y los resultados de la llamada al API. 
+     * 
+     */
+    debugMode?: boolean
+}
+
+
+/** 
+ * Valores por defecto para la llamada a ExtractWiki:
+ * - textToSearch: 'Belgrado', 
+ * - rootUrl: 'https://es.wikipedia.org',
+ * - numPagesToSearch: 1,
+ * - plainText: true,
+ * - numChars: 300,
+ * - numSentences: 0,
+ * - imageSize: 250
+ */
+export const EXTRACT_WIKI_DEFAULTS: IExtractWikiProps = {
     textToSearch: 'Belgrado', //'Guernica, pintura de Picasso',
     rootUrl: 'https://es.wikipedia.org',
     numPagesToSearch: 1,
     plainText: true,
     numChars: 300,
     numSentences: 0,
-    imageSize: 250
+    imageSize: 250,
+    debugMode: false,
 }
 
-export async function ExtractWiki(props, abortSignal = undefined) {
+/** 
+ * Objeto con los resultados de la llamada a la Wiki relativos a la imágen descargada.
+ */
+export interface IWikiExtractPageImage {
+    /** Url de la imágen. */
+    url: string;
+    /** width de la imágen. */
+    width: number;
+    /** height de la imágen. */
+    height: number;
+}
+
+/** 
+ * Objeto con los resultados de la llamada a la Wiki.
+ */
+export interface IWikiExtractPage {
+    /** Id. de la página devuelto por la API. */
+    pageId: string;
+    /** Cuando se solicita mas de una página, refleja la relevancia del resultado. La ocurrencia mas parecida al texto buscado viene con index = 1. */
+    index: number;
+    /** Extracto del artículo devuelto por la API. */
+    textOrHtml: string;
+    /** Título del artículo o página encontrado. */
+    title: string;
+    /** Link para llamar a la página (es la URL raiz mas el título de la página o artículo). */
+    link: string;
+    /** Imagen devuelta. Puede ser undefined, ya que no todos los artículos o páginas devuelven una Foto principal. */
+    image?: IWikiExtractPageImage;
+}
+
+/**
+ * Recupera el extracto de uno o mas artículos de Wikipedia
+ * @param props (IExtractWikiProps): Objeto que sólo requiere el texto a buscar 'textToSearch' (ver EXTRACT_WIKI_DEFAULTS).
+ * @param abortSignal (AbortSignal?): Aconsejable si se usa esta funcionalidad desde un Tooltip, por ejemplo, para evitar errores en la consola.
+ * @return Promise<IWikiExtractPage[]>: Promesa de un array de IWikiExtractPage.
+ */
+export async function ExtractWiki(props: IExtractWikiProps, abortSignal?: AbortSignal): Promise<IWikiExtractPage[]> {
     let parWiki = {
         ...props
     };
@@ -20,6 +113,8 @@ export async function ExtractWiki(props, abortSignal = undefined) {
         parWiki.numPagesToSearch = EXTRACT_WIKI_DEFAULTS.numPagesToSearch;
     if (!props.imageSize || props.imageSize <= 50)
         parWiki.imageSize = EXTRACT_WIKI_DEFAULTS.imageSize;
+    if (props.plainText == undefined)
+        parWiki.plainText = EXTRACT_WIKI_DEFAULTS.plainText;
 
     if (props.debugMode) {
         console.log('* ExtractWiki props');
@@ -39,7 +134,7 @@ export async function ExtractWiki(props, abortSignal = undefined) {
             + `&gsrlimit=${parWiki.numPagesToSearch}`
             // Buscar títulos parecidos, no título exacto
             + `&gsrsearch=${parWiki.textToSearch}`
-            // Pedimos extraxto y foto principal, así como el formato de salida, todo a piñón: 
+            // Pedimos extracto y foto principal, así como el formato de salida: 
             + `&prop=extracts|pageimages&format=json`
             // Tamaño de la imagen 
             + `&exintro=&pithumbsize=${parWiki.imageSize}`
@@ -67,7 +162,7 @@ export async function ExtractWiki(props, abortSignal = undefined) {
         // Realizar la Query
         let restResponse;
         try {
-            restResponse = await fetch(queryUrl, {signal: abortSignal});
+            restResponse = await fetch(queryUrl, { signal: abortSignal });
         } catch (error) {
             let textError = `The call to Wikipedia returned an error: ${error}`;
             console.log(textError);
@@ -86,7 +181,7 @@ export async function ExtractWiki(props, abortSignal = undefined) {
         }
 
         // Procesar la respuesta
-        let dataWiki;
+        let dataWiki: any;
         try {
             dataWiki = await restResponse.json();
             if (props.debugMode) {

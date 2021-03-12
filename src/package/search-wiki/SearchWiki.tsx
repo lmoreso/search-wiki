@@ -1,9 +1,15 @@
 import * as React from 'react';
 
 import { ExtractWiki, IWikiExtractPage, } from './ExtractWiki';
-import { fetchStates, ISearchWikiProps, ISearchWikiStates, panelOrientations } from './SearchWikiProps';
+import { ISearchWikiProps, panelOrientations } from './SearchWikiProps';
 import * as Iconos from './iconos';
 
+enum fetchStates { loading, loadedOk, loadedErr, nothing }
+
+interface ISearchWikiStates {
+  fetchState: fetchStates;
+  pageIndex?: number;
+}
 
 export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiStates> {
   private _txtError: string;
@@ -114,6 +120,9 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
   }
 
   public render(): JSX.Element {
+    // Tamaño del Panel
+    let fixedSize = (this.props.fixedSize) ? this.props.fixedSize : 250;
+
     // Estilos para Depuración
     let divsBorder: string | undefined = (this.props.isDevelopMode) ? '1px solid red' : undefined;
 
@@ -131,13 +140,13 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
     }
     if (this.props.panelOrientation !== panelOrientations.landscape) {
       // Orientación Vertical
-      divRootCSS.width = `${this.props.fixedSize}px`;
-      divRootCSS.minHeight = `${Math.round(this.props.fixedSize * 0.5)}px`;
+      divRootCSS.width = `${fixedSize}px`;
+      divRootCSS.minHeight = `${Math.round(fixedSize * 0.5)}px`;
     } else {
       // Orientación Horizontal
-      divRootCSS.height = `${this.props.fixedSize}px`;
-      divRootCSS.maxWidth = `${Math.round(this.props.fixedSize * 1.5)}px`;
-      divRootCSS.minWidth = `${this.props.fixedSize}px`;
+      divRootCSS.height = `${fixedSize}px`;
+      divRootCSS.maxWidth = `${Math.round(fixedSize * 1.5)}px`;
+      divRootCSS.minWidth = `${fixedSize}px`;
     }
 
     if (this.state.fetchState === fetchStates.nothing) {
@@ -165,7 +174,7 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
       let imagenHeight = (thePage.image) ? thePage.image.height : undefined;
       let aspectRatio = (thePage.image) ? imagenWidth! / imagenHeight! : 0;
       let landscape = false;
-      if (this.props.panelOrientation === panelOrientations.landscape)
+      if (this.props.panelOrientation == undefined || this.props.panelOrientation === panelOrientations.landscape)
         landscape = true;
       else if (this.props.panelOrientation === panelOrientations.auto && (imagenWidth) && (imagenHeight) && imagenHeight > imagenWidth) {
         landscape = true;
@@ -197,21 +206,21 @@ export class SearchWiki extends React.Component<ISearchWikiProps, ISearchWikiSta
       }
 
       if (landscape) {
-        divRootCSS.maxWidth = `${this.props.fixedSize * 4}px`;
-        divRootCSS.height = `${this.props.fixedSize}px`;
+        divRootCSS.maxWidth = `${fixedSize * 4}px`;
+        divRootCSS.height = `${fixedSize}px`;
         divRootCSS.width = undefined;
-        divImagenWidth = (aspectRatio) ? Math.round(this.props.fixedSize * aspectRatio! - divRootPadding * 2) : 0;
-        if (divImagenWidth > this.props.fixedSize * 1.9)
-          divImagenWidth = Math.round(this.props.fixedSize * 1.9);
-        divTextWidth = this.props.fixedSize - divMargin * 2;
-        divImageCSS.height = `${this.props.fixedSize - divMargin * 2 - divRootPadding * 2 - 2}px`;
+        divImagenWidth = (aspectRatio) ? Math.round(fixedSize * aspectRatio! - divRootPadding * 2) : 0;
+        if (divImagenWidth > fixedSize * 1.9)
+          divImagenWidth = Math.round(fixedSize * 1.9);
+        divTextWidth = fixedSize - divMargin * 2;
+        divImageCSS.height = `${fixedSize - divMargin * 2 - divRootPadding * 2 - 2}px`;
       } else {
-        divRootCSS.width = `${this.props.fixedSize}px`;
+        divRootCSS.width = `${fixedSize}px`;
         divRootCSS.maxHeight = `1000px`;
         divRootCSS.height = undefined;
-        divTextWidth = this.props.fixedSize - divMargin * 2 - divRootPadding * 2 - 2;
+        divTextWidth = fixedSize - divMargin * 2 - divRootPadding * 2 - 2;
         divImagenWidth = (aspectRatio) ? divTextWidth : 0;
-        divImageCSS.maxHeight = `${this.props.fixedSize}px`
+        divImageCSS.maxHeight = `${fixedSize}px`
       }
       divImageCSS.width = `${divImagenWidth}px`
       divTextCSS.width = `${divTextWidth}px`

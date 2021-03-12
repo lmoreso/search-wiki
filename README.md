@@ -8,7 +8,7 @@
 
 ---
 
-SearchWiki es un componente React realizado con FluentUI, y, por tanto, escrito en Typescript, que es capaz de lanzar una consulta a cualquier Wiki (como Wikipedia), extraer un extracto del artículo(s) encontrado(s) (primeras frases y foto principal) y mostrarlos en el navegador.
+SearchWiki es un componente React escrito en Typescript, que es capaz de lanzar una consulta a cualquier Wiki (como Wikipedia), extraer un extracto del artículo(s) encontrado(s) (primeras frases y foto principal) y mostrarlos en el navegador.
 
 ## Table of Contents
 
@@ -18,10 +18,11 @@ SearchWiki es un componente React realizado con FluentUI, y, por tanto, escrito 
 - [Built Using](#built-using)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgements)
+- [Implementación de SearchWiki](./src/package/search-wiki/README.md)
 
 ## About
 
-SearchWiki es un componente React realizado con FluentUI, y, por tanto, escrito en Typescript, que es capaz de lanzar una consulta a cualquier Wiki (como Wikipedia), extraer un extracto (primeros párrafos y foto principal) del artículo(s) encontrado(s) y mostrarlos en el navegador.
+SearchWiki es un componente React escrito en Typescript, que es capaz de lanzar una consulta a cualquier Wiki (como Wikipedia), extraer un extracto del artículo(s) encontrado(s) (primeras frases y foto principal) y mostrarlos en el navegador.
 
 - Puede utilizarse en Tooltips, en los Paneles Modales y laterales de FluentUI, y donde se te ocurra.
 - Esta aplicación muestra ejemplos de uso y configuración del componente.

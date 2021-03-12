@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Fabric, initializeIcons, Link, Modal, SelectableOptionMenuItemType, Stack, } from 'office-ui-fabric-react';
+import { Fabric, ILinkStyles, initializeIcons, Link, Modal, SelectableOptionMenuItemType, Stack, } from 'office-ui-fabric-react';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { ILabelStyles, Label } from 'office-ui-fabric-react/lib/Label';
@@ -11,14 +11,14 @@ import { Panel } from 'office-ui-fabric-react/lib/Panel';
 import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import { getTheme, ITheme, } from 'office-ui-fabric-react/lib/Styling';
 // Ubicación real de las carpetas
-import { SearchWikiFlUI } from './package/search-wiki/SearchWikiFUI';
-import { ISearchWikiProps } from './package/search-wiki/SearchWikiProps';
 import { EXTRACT_WIKI_DEFAULTS, EXTRACT_WIKI_VERSION } from './package/search-wiki/ExtractWiki';
-import { panelOrientations } from './package/search-wiki/SearchWikiProps';
+import { ISearchWikiProps, panelOrientations } from './package/search-wiki/SearchWikiProps';
 import { SearchWiki } from './package/search-wiki/SearchWiki';
+import { Example } from './package/search-wiki/example';
 // En node-modules tengo un enlace a la carpeta real llamado 'search-wiki'.
-// import { panelOrientations, SearchWiki } from 'search-wiki/SearchWiki';
 // import { EXTRACT_WIKI_DEFAULTS, SEARCH_WIKI_VERSION } from 'search-wiki/ExtractWiki';
+// import { ISearchWikiProps, panelOrientations } from 'search-wiki/SearchWikiProps';
+// import { SearchWiki } from 'search-wiki/SearchWiki';
 
 interface SearchWikiExampleProps {
 
@@ -87,7 +87,7 @@ interface ISearchWikiExampleEstates extends ISearchWikiPropsStates {
   selectComboSearchTextKey: string | number | undefined;
   selectComboLinkTextKey: string | number | undefined;
   isModalOpen: boolean;
-  isFluentUI: boolean;
+  isExampleOpen: boolean;
 }
 
 export class SearchWikiExample extends React.Component<SearchWikiExampleProps, ISearchWikiExampleEstates> {
@@ -118,8 +118,8 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
       isPanelOpen: false,
       selectComboSearchTextKey: comboTextSearch[TEXT_TO_SEARCH_DEFAULT_INDEX].key,
       isModalOpen: false,
+      isExampleOpen: false,
       selectComboLinkTextKey: 'CA',
-      isFluentUI: false,
     }
 
     initializeIcons();
@@ -134,53 +134,36 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
   }
 
   private renderSearchWiki(params: ISearchWikiProps): JSX.Element {
-    if (this.state.isFluentUI)
-      return (
-        <SearchWikiFlUI
-          textToSearch={params.textToSearch}
-          rootUrl={params.rootUrl}
-          fixedSize={params.fixedSize}
-          numChars={params.numChars}
-          numPagesToSearch={params.numPagesToSearch}
-          numSentences={params.numSentences}
-          plainText={params.plainText}
-          imageSize={params.imageSize}
-          panelOrientation={params.panelOrientation}
-          textLinkWiki={params.textLinkWiki}
-          debugMode={params.debugMode}
-          onWikiError={params.onWikiError}
-          isDevelopMode={params.isDevelopMode}
-          rootStyle={params.rootStyle}
-        />
-      )
-    else
-      return (
-        <SearchWiki
-          textToSearch={params.textToSearch}
-          rootUrl={params.rootUrl}
-          fixedSize={params.fixedSize}
-          numChars={params.numChars}
-          numPagesToSearch={params.numPagesToSearch}
-          numSentences={params.numSentences}
-          plainText={params.plainText}
-          imageSize={params.imageSize}
-          panelOrientation={params.panelOrientation}
-          textLinkWiki={params.textLinkWiki}
-          debugMode={params.debugMode}
-          onWikiError={params.onWikiError}
-          isDevelopMode={params.isDevelopMode}
-          rootStyle={params.rootStyle}
-        />
-      )
+    return (
+      <SearchWiki
+        textToSearch={params.textToSearch}
+        rootUrl={params.rootUrl}
+        fixedSize={params.fixedSize}
+        numChars={params.numChars}
+        numPagesToSearch={params.numPagesToSearch}
+        numSentences={params.numSentences}
+        plainText={params.plainText}
+        imageSize={params.imageSize}
+        panelOrientation={params.panelOrientation}
+        textLinkWiki={params.textLinkWiki}
+        debugMode={params.debugMode}
+        onWikiError={params.onWikiError}
+        isDevelopMode={params.isDevelopMode}
+        rootStyle={params.rootStyle}
+      />
+    )
   }
 
   public render(): JSX.Element {
     // let estilo = { margin: '10px', };
 
-    let labelTitleStyles: Partial<ILabelStyles> = { root: { textAlign: 'left', fontSize: 'smaller', margin: '0 10px 0px 10px', fontWeight: 'bolder', } };
-    let controlStyles = { root: { margin: '0 10px 10px 10px', /* width: '300px',  */ } };
+    let stackStyles = { root: { padding: '10px 10px 10px 10px', /* width: '300px',  */ } };
+    let labelTitleStyles: Partial<ILabelStyles> = { root: { textAlign: 'left', fontSize: 'smaller', margin: '4px 0 0 0', fontWeight: 'bolder', } };
+    let linkStyles: Partial<ILinkStyles> = { root: { textAlign: 'left', fontSize: 'smaller', margin: '0' } };
+    let controlStyles = { root: { margin: '4px 0px 4px 10px', /* width: '300px',  */ } };
     let labelStyle: React.CSSProperties = { textAlign: 'left', fontSize: 'smaller', };
-    let labelControlStyle: React.CSSProperties = { textAlign: 'left', fontSize: 'smaller', margin: '0 10px 10px 10px', };
+    let labelControlStyle: React.CSSProperties = { textAlign: 'left', fontSize: 'smaller', margin: '0 0px 4px 10px', };
+    let separatorStyle: React.CSSProperties = { height: '5px', };
 
     return (
       <Fabric>
@@ -188,7 +171,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
           <Stack styles={{
             root: {
               margin: '10px', borderStyle: 'solid', borderWidth: '1px', borderColor: 'gray', boxShadow: '5px 5px 5px gray',
-              height: '700px', width: '330px', overflow: 'hidden',
+              height: '670px', width: '330px', overflow: 'hidden',
             }
           }}>
             <Label style={{ fontSize: 'large', fontWeight: 'lighter', textAlign: 'center' }}>{'Configuración <SearchWiki />'}</Label>
@@ -203,7 +186,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
               }}
             >
               <PivotItem headerText="Búsqueda" itemIcon="Globe" >
-                <Stack>
+                <Stack styles={stackStyles}>
                   <Label styles={labelTitleStyles} >{'Texto a buscar en la Wiki'}</Label>
                   <ComboBox
                     selectedKey={this.state.selectComboSearchTextKey}
@@ -313,6 +296,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                     offText={'Activar Control de Errores'}
                     styles={controlStyles}
                   />
+                  <span style={separatorStyle}></span>
                   <DefaultButton
                     onClick={(ev) => {
                       this._searchWikiProps = this.state;
@@ -320,6 +304,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                       // this.forceUpdate();
                     }}
                     styles={controlStyles}
+                    style={{borderStyle: 'solid', borderWidth: '1px', borderColor: 'gray', borderRadius: '4px'}}
                     disabled={!this.state.canUpdate}
                   >
                     Busca en Wikipedia
@@ -327,17 +312,7 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                 </Stack>
               </PivotItem>
               <PivotItem headerText="Formato" itemIcon="DeveloperTools">
-                <Stack>
-                  <Label styles={labelTitleStyles}>{'Modo FluentUI'}</Label>
-                  <Toggle
-                    checked={this.state.isFluentUI}
-                    onChange={(event: any, checked?: boolean | undefined): void => {
-                      this.setState({ isFluentUI: checked! });
-                    }}
-                    onText={'Usando FluentUI'}
-                    offText={'Pulsa para cambiar a FluentUI'}
-                    styles={controlStyles}
-                  />
+                <Stack styles={stackStyles}>
                   <Label styles={labelTitleStyles}>{'Tamaño fijado del panel'}</Label>
                   <Slider
                     // label="Tamaño fijado del panel"
@@ -412,19 +387,21 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                       this.setState({ isPanelOpen: true })
                     }}
                     styles={controlStyles}
-                    style={{ fontSize: 'smaller', fontWeight: 'lighter', }}
+                    style={{ fontSize: 'smaller', fontWeight: 'lighter', borderRadius: '4px' }}
                   >
                     Abrir Panel derecho (Orientación vertical, 5 páginas)
-                </PrimaryButton>
+                  </PrimaryButton>
+                  <span style={separatorStyle}></span>
                   <PrimaryButton
                     onClick={(ev) => {
                       this.setState({ isModalOpen: true })
                     }}
                     styles={controlStyles}
-                    style={{ fontSize: 'smaller', fontWeight: 'lighter', }}
+                    style={{ fontSize: 'smaller', fontWeight: 'lighter', borderRadius: '4px' }}
                   >
                     Abrir Panel central (Orientación horizontal, 5 páginas)
-                </PrimaryButton>
+                  </PrimaryButton>
+                  <span style={separatorStyle}></span>
                   <TooltipHost
                     tooltipProps={{
                       onRenderContent: () =>
@@ -451,14 +428,32 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                       gapSpace: 0,
                       calloutMaxWidth: 600,
                     }}
+                    styles={controlStyles}
                   >
                     <PrimaryButton
-                      styles={controlStyles}
-                      style={{ fontSize: 'smaller', fontWeight: 'lighter', }}
+                    style={{ fontSize: 'smaller', fontWeight: 'lighter', borderRadius: '4px' }}
                     >
                       Pasa el ratón para ver el 'Tooltip' (Orientación automática, 1 sola página)
                     </PrimaryButton>
                   </TooltipHost>
+                  <span style={separatorStyle}></span>
+                  <PrimaryButton
+                    onClick={(ev) => {
+                      this.setState({ isExampleOpen: true })
+                    }}
+                    styles={controlStyles}
+                    style={{ fontSize: 'smaller', fontWeight: 'lighter', borderRadius: '4px' }}
+                  >
+                    Ejecutar código de Ejemplo (en Panel Central)
+                  </PrimaryButton>
+
+                  <Modal
+                    isOpen={this.state.isExampleOpen}
+                    onDismiss={() => this.setState({ isExampleOpen: false })}
+                  >
+                    <Example />
+                  </Modal>
+
                   <Panel
                     isLightDismiss
                     isOpen={this.state.isPanelOpen}
@@ -510,12 +505,12 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
               </PivotItem>
 
               <PivotItem headerText="Créditos" itemIcon="Info">
-                <Stack>
+                <Stack styles={stackStyles}>
                   <Label styles={labelTitleStyles}>
-                    {`<SearchWiki/> Versión ${EXTRACT_WIKI_VERSION}`}
+                    {`<SearchWiki /> Versión ${EXTRACT_WIKI_VERSION}`}
                   </Label>
                   <Label styles={labelTitleStyles}>{'Idea y trabajo inicial'}</Label>
-                  <Link styles={controlStyles} href={'https://github.com/lmoreso'} target='_blank'>@lmoreso</Link>
+                  <Link style={labelControlStyle} href={'https://github.com/lmoreso'} target='_blank'>@lmoreso</Link>
                   <Label styles={labelTitleStyles}>{'Configuración de Búsqueda'}</Label>
                   <label style={labelControlStyle}>
                     Cuando cambies cualquier parámetro, se activará el botón 'Busca en Wikipedia', el cual lanza la query y pinta los resultados
@@ -525,36 +520,47 @@ export class SearchWikiExample extends React.Component<SearchWikiExampleProps, I
                   <label style={labelControlStyle}>
                     El cambio de cualquier parámetro se refleja directamente en el panel derecho.
                   </label>
+                  <Label styles={labelTitleStyles}>{'Documentación'}</Label>
+                  <ul>
+                    <li>
+                      <Link styles={linkStyles} href={'https://github.com/lmoreso/search-wiki/blob/desarrollo/src/package/search-wiki/README.md'}
+                        target='_blank'>Implementación de SearchWiki</Link>
+                    </li>
+                    <li>
+                      <Link styles={linkStyles} href={'https://github.com/lmoreso/search-wiki/blob/desarrollo/README.md'}
+                        target='_blank'>SearchWiki Example</Link>
+                    </li>
+                  </ul>
                   <Label styles={labelTitleStyles}>{'Clona la aplicación'}</Label>
-                  <Link styles={controlStyles} href={'https://github.com/lmoreso/search-wiki.git'} target='_blank'>https://github.com/lmoreso/search-wiki.git</Link>
+                  <Link style={labelControlStyle} href={'https://github.com/lmoreso/search-wiki.git'} target='_blank'>https://github.com/lmoreso/search-wiki.git</Link>
                   <Label styles={labelTitleStyles}>{'Built Using'}</Label>
                   <ul>
                     <li>
-                      <Link styles={controlStyles} href={'https://nodejs.org/en/'} target='_blank'>NodeJs</Link>
-                      <span style={labelStyle as React.CSSProperties}>- Entorno de desarrollo.</span>
+                      <Link styles={linkStyles} href={'https://nodejs.org/en/'} target='_blank'>NodeJs</Link>
+                      <span style={labelStyle as React.CSSProperties}> - Entorno de desarrollo.</span>
                     </li>
                     <li>
-                      <Link styles={controlStyles} href={'https://reactjs.org/'} target='_blank'>ReactJs</Link>
-                      <span style={labelStyle as React.CSSProperties}>- Web Framework.</span>
+                      <Link styles={linkStyles} href={'https://reactjs.org/'} target='_blank'>ReactJs</Link>
+                      <span style={labelStyle as React.CSSProperties}> - Web Framework.</span>
                     </li>
                     <li>
-                      <Link styles={controlStyles} href={'https://developer.microsoft.com/en-us/fluentui#/controls/web/'} target='_blank'>FluentUI</Link>
-                      <span style={labelStyle as React.CSSProperties}>- Web UI Framework.</span>
+                      <Link styles={linkStyles} href={'https://developer.microsoft.com/en-us/fluentui#/controls/web/'} target='_blank'>FluentUI</Link>
+                      <span style={labelStyle as React.CSSProperties}> - Web UI Framework.</span>
                     </li>
                     <li>
-                      <Link styles={controlStyles} href={'https://www.typescriptlang.org/docs/'} target='_blank'>Typescript</Link>
-                      <span style={labelStyle as React.CSSProperties}>- Lenguaje principal.</span>
+                      <Link styles={linkStyles} href={'https://www.typescriptlang.org/docs/'} target='_blank'>Typescript</Link>
+                      <span style={labelStyle as React.CSSProperties}> - Lenguaje principal.</span>
                     </li>
                   </ul>
                   <Label styles={labelTitleStyles}>{'Agradecimientos'}</Label>
                   <ul>
                     <li>
-                      <Link styles={controlStyles} href={'https://www.mediawiki.org/wiki/MediaWiki'} target='_blank'>Mediawiki</Link>
-                      <span style={labelStyle as React.CSSProperties}>- Por publicar servicios REST.</span>
+                      <Link styles={linkStyles} href={'https://www.mediawiki.org/wiki/MediaWiki'} target='_blank'>Mediawiki</Link>
+                      <span style={labelStyle as React.CSSProperties}> - Por publicar servicios REST.</span>
                     </li>
                     <li>
-                      <Link styles={controlStyles} href={'https://wikimediafoundation.org/'} target='_blank'>Wikipedia</Link>
-                      <span style={labelStyle as React.CSSProperties}>- Por la gestión de los contenidos.</span>
+                      <Link styles={linkStyles} href={'https://wikimediafoundation.org/'} target='_blank'>Wikipedia</Link>
+                      <span style={labelStyle as React.CSSProperties}> - Por la gestión de los contenidos.</span>
                     </li>
                   </ul>
                 </Stack>

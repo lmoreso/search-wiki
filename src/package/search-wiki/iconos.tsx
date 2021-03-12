@@ -54,9 +54,9 @@ export const ChevronRight = ({
       fill={fill}
       style={style}
       stroke={stroke}
-      stroke-width={strokeWidth}
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
       <polyline points="9 18 15 12 9 6" />
     </svg>
@@ -79,9 +79,9 @@ export const ChevronLeft = ({
       viewBox={viewBox}
       fill={fill}
       stroke={stroke}
-      stroke-width={strokeWidth}
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
       <polyline points="15 18 9 12 15 6" />
     </svg>
