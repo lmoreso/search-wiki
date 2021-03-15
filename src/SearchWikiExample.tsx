@@ -11,14 +11,16 @@ import { Panel } from 'office-ui-fabric-react/lib/Panel';
 import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import { getTheme, ITheme, } from 'office-ui-fabric-react/lib/Styling';
 // Ubicación real de las carpetas
-import { EXTRACT_WIKI_DEFAULTS, EXTRACT_WIKI_VERSION } from './package/search-wiki/ExtractWiki';
-import { ISearchWikiProps, panelOrientations } from './package/search-wiki/SearchWikiProps';
-import { SearchWiki } from './package/search-wiki/SearchWiki';
-import { Example } from './package/search-wiki/example';
+// import { EXTRACT_WIKI_DEFAULTS, EXTRACT_WIKI_VERSION } from './package/search-wiki/ExtractWiki';
+// import { ISearchWikiProps, panelOrientations } from './package/search-wiki/SearchWikiProps';
+// import { SearchWiki } from './package/search-wiki/SearchWiki';
+// import { Example } from './package/search-wiki/example';
+
 // En node-modules tengo un enlace a la carpeta real llamado 'search-wiki'.
-// import { EXTRACT_WIKI_DEFAULTS, SEARCH_WIKI_VERSION } from 'search-wiki/ExtractWiki';
-// import { ISearchWikiProps, panelOrientations } from 'search-wiki/SearchWikiProps';
-// import { SearchWiki } from 'search-wiki/SearchWiki';
+import { EXTRACT_WIKI_DEFAULTS, EXTRACT_WIKI_VERSION } from 'search-wiki/ExtractWiki';
+import { ISearchWikiProps, panelOrientations } from 'search-wiki/SearchWikiProps';
+import { SearchWiki } from 'search-wiki/SearchWiki';
+import { Example } from 'search-wiki/example';
 
 interface SearchWikiExampleProps {
 
