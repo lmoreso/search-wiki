@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { SearchWiki } from 'search-wiki//SearchWiki';
-import { panelOrientations } from 'search-wiki//SearchWikiProps';
+import { SearchWiki } from './SearchWiki';
+import { panelOrientations } from './SearchWikiProps';
 
 export const Example: React.FunctionComponent = () => {
   let styleSW: React.CSSProperties = { border: '1px solid gray', boxShadow: '5px 5px 5px gray', margin: '10px', }
